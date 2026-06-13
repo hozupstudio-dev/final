@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ARCHIVE — Xdinary Heroes</title>
+  <link rel="stylesheet" href="assets/css/common.css" />
+  <style>
+    body { background:#0c0c0e; }
+    /* gritty cement wall backdrop */
+    .wall {
+      position: fixed; inset: 0; z-index:-2;
+      background:
+        radial-gradient(900px 600px at 30% 20%, #26262a 0%, transparent 60%),
+        radial-gradient(700px 500px at 80% 90%, #1c1c1f 0%, transparent 60%),
+        #131315;
+    }
+    .wall::after {
+      content:""; position:absolute; inset:0; opacity:0.16;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .intro { padding: 120px 60px 10px; }
+    .intro h1 { font-size: clamp(38px,6vw,68px); font-weight:800; }
+    .intro .sub { color: var(--text-dim); margin-top:8px; }
+
+    .archive-hint {
+      padding: 16px 60px 0; color: var(--text-dim); font-size:13px; letter-spacing:0.08em;
+      display:flex; gap:16px; align-items:center; flex-wrap:wrap;
+    }
+    .archive-hint kbd {
+      background: rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15);
+      border-radius:6px; padding:2px 8px; font-size:12px;
+    }
+
+    /* horizontal slider of posters */
+    .slider-wrap { position: relative; margin-top: 28px; }
+    .slider {
+      display: flex; gap: 46px;
+      padding: 30px 60px 60px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+    }
+    .slider::-webkit-scrollbar { display:none; }
+
+    .poster {
+      flex: 0 0 clamp(300px, 34vw, 440px);
+      scroll-snap-align: center;
+      background: #d9d6cf;
+      color: #14140f;
+      border-radius: 4px;
+      padding: 26px 26px 30px;
+      transform: rotate(var(--tilt, -1deg));
+      box-shadow: 0 24px 50px rgba(0,0,0,0.6);
+      position: relative;
+      transition: transform 0.4s, box-shadow 0.4s;
+      font-family: "Courier New", monospace;
+    }
+    .poster:hover { transform: rotate(0deg) translateY(-6px) scale(1.01); box-shadow:0 34px 70px rgba(0,0,0,0.7); }
+    /* torn tape on top corners */
+    .poster::before {
+      content:""; position:absolute; top:-10px; left:50%; transform:translateX(-50%) rotate(-2deg);
+      width:110px; height:26px; background: rgba(180,175,160,0.55);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    .poster .ph { display:flex; justify-content:space-between; align-items:baseline;
+      border-bottom: 2px solid #14140f; padding-bottom:8px; }
+    .poster .ph .album-no { font-weight:800; letter-spacing:0.1em; font-size:13px; }
+    .poster .ph .album-tag { font-size:11px; letter-spacing:0.15em; }
+    .poster h2 {
+      font-family:"Pretendard","Noto Sans KR",sans-serif;
+      font-size: clamp(26px,3.4vw,40px); font-weight:900; margin:14px 0 4px;
+      text-transform:uppercase; letter-spacing:-0.01em;
+    }
+    .poster .release { font-size:12px; color:#3a3a30; margin-bottom:14px; }
+
+    .tracklist { list-style:none; }
+    .tracklist li {
+      display:flex; align-items:center; gap:10px;
+      padding:9px 8px; border-bottom:1px dashed rgba(20,20,15,0.35);
+      cursor:pointer; transition: background 0.15s, color 0.15s;
+      font-family:"Pretendard","Noto Sans KR",sans-serif;
+    }
+    .tracklist li:hover { background: rgba(20,20,15,0.08); }
+    .tracklist li .num { font-weight:800; font-size:12px; width:22px; color:#5a5a4a; }
+    .tracklist li .title { flex:1; font-weight:600; }
+    .tracklist li.is-title .title { text-decoration: underline; }
+    .tracklist li .play-ico {
+      width:24px; height:24px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      border:1.5px solid #14140f; font-size:10px; flex-shrink:0;
+    }
+    .tracklist li.playing { background:#14140f; color:#d9d6cf; }
+    .tracklist li.playing .num { color:#b9b6a0; }
+    .tracklist li.playing .play-ico { border-color:#d9d6cf; }
+
+    .poster .footer-stamp {
+      margin-top:16px; font-size:11px; letter-spacing:0.2em; color:#5a5a4a;
+      display:flex; justify-content:space-between;
+    }
+
+    /* slider arrows */
+    .nav-arrow {
+      position:absolute; top:50%; transform:translateY(-50%); z-index:5;
+      width:52px; height:52px; border-radius:50%; cursor:pointer;
+      background: rgba(20,24,33,0.8); border:1px solid rgba(255,255,255,0.15);
+      color:#fff; font-size:20px; display:flex; align-items:center; justify-content:center;
+      backdrop-filter: blur(6px);
+    }
+    .nav-arrow:hover { border-color: var(--accent); }
+    .nav-arrow.prev { left: 20px; }
+    .nav-arrow.next { right: 20px; }
+
+    /* now-playing bar */
+    .now-playing {
+      position: fixed; left:50%; bottom:24px; transform: translate(-50%, 120%);
+      z-index: 90; display:flex; align-items:center; gap:16px;
+      background: rgba(15,15,17,0.92); border:1px solid rgba(255,255,255,0.12);
+      padding: 12px 18px; border-radius: 999px; backdrop-filter: blur(10px);
+      transition: transform 0.35s; min-width: 280px;
+    }
+    .now-playing.show { transform: translate(-50%, 0); }
+    .now-playing .eq { display:flex; align-items:flex-end; gap:3px; height:20px; }
+    .now-playing .eq span { width:3px; background:var(--accent); border-radius:2px;
+      animation: eq 0.8s ease-in-out infinite; }
+    .now-playing .eq span:nth-child(2){animation-delay:.2s}
+    .now-playing .eq span:nth-child(3){animation-delay:.4s}
+    .now-playing .eq span:nth-child(4){animation-delay:.1s}
+    @keyframes eq { 0%,100%{height:20%} 50%{height:100%} }
+    .now-playing .np-text b { display:block; font-size:14px; }
+    .now-playing .np-text small { color: var(--text-dim); font-size:11px; letter-spacing:0.1em; }
+    .now-playing .np-stop { margin-left:6px; cursor:pointer; color:var(--text-dim); }
+    .now-playing .np-stop:hover { color:#fff; }
+
+    @media (max-width:720px){
+      .intro { padding:108px 22px 6px; }
+      .archive-hint { padding:14px 22px 0; }
+      .slider { padding: 24px 22px 50px; gap:30px; }
+      .nav-arrow { display:none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wall"></div>
+
+  <nav class="site-nav">
+    <div class="brand"><a href="index.html">XDINARY<b>HEROES</b></a></div>
+    <ul>
+      <li><a href="discography.html">Discography</a></li>
+      <li><a href="archive.html" class="active">Archive</a></li>
+      <li><a href="behind.html">Behind</a></li>
+    </ul>
+  </nav>
+
+  <section class="intro">
+    <h1>ARCHIVE</h1>
+    <p class="sub">스트릿 감성을 활용한 전곡 트랙 리스트</p>
+  </section>
+  <div class="archive-hint">
+    <span>시멘트 벽에 붙은 거리 포스터 — 곡명을 누르면 오디오가 재생됩니다.</span>
+    <span><kbd>←</kbd> <kbd>→</kbd> 로 포스터 전환</span>
+  </div>
+
+  <div class="slider-wrap">
+    <button class="nav-arrow prev" aria-label="이전">‹</button>
+    <button class="nav-arrow next" aria-label="다음">›</button>
+
+    <div class="slider" id="slider">
+
+      <article class="poster" style="--tilt:-2deg">
+        <div class="ph"><span class="album-no">[PHASE 1]</span><span class="album-tag">1ST MINI</span></div>
+        <h2>Hello, world!</h2>
+        <p class="release">2021.12.06 · TRACKLIST</p>
+        <ul class="tracklist">
+          <li class="is-title" data-seed="1"><span class="num">01</span><span class="title">Knock Down</span><span class="play-ico">▶</span></li>
+          <li data-seed="2"><span class="num">02</span><span class="title">X-MAS</span><span class="play-ico">▶</span></li>
+          <li data-seed="3"><span class="num">03</span><span class="title">Crack</span><span class="play-ico">▶</span></li>
+          <li data-seed="4"><span class="num">04</span><span class="title">Don't Be Sad</span><span class="play-ico">▶</span></li>
+        </ul>
+        <div class="footer-stamp"><span>XDINARY HEROES</span><span>WE ARE NOT THE SAME</span></div>
+      </article>
+
+      <article class="poster" style="--tilt:1.5deg">
+        <div class="ph"><span class="album-no">[PHASE 2]</span><span class="album-tag">2ND MINI</span></div>
+        <h2>Overload</h2>
+        <p class="release">2022.07.20 · TRACKLIST</p>
+        <ul class="tracklist">
+          <li class="is-title" data-seed="5"><span class="num">01</span><span class="title">Hair Cut</span><span class="play-ico">▶</span></li>
+          <li data-seed="6"><span class="num">02</span><span class="title">Pin</span><span class="play-ico">▶</span></li>
+          <li data-seed="7"><span class="num">03</span><span class="title">Strawberry Cake</span><span class="play-ico">▶</span></li>
+          <li data-seed="8"><span class="num">04</span><span class="title">おかえり</span><span class="play-ico">▶</span></li>
+        </ul>
+        <div class="footer-stamp"><span>XDINARY HEROES</span><span>YOU ARE NOT ALONE</span></div>
+      </article>
+
+      <article class="poster" style="--tilt:-1deg">
+        <div class="ph"><span class="album-no">[PHASE 3]</span><span class="album-tag">3RD MINI</span></div>
+        <h2>Deadlock</h2>
+        <p class="release">2023.10.18 · TRACKLIST</p>
+        <ul class="tracklist">
+          <li class="is-title" data-seed="9"><span class="num">01</span><span class="title">Break the Brake</span><span class="play-ico">▶</span></li>
+          <li data-seed="10"><span class="num">02</span><span class="title">Freedom</span><span class="play-ico">▶</span></li>
+          <li data-seed="11"><span class="num">03</span><span class="title">Sucker Punch</span><span class="play-ico">▶</span></li>
+          <li data-seed="12"><span class="num">04</span><span class="title">Devil</span><span class="play-ico">▶</span></li>
+        </ul>
+        <div class="footer-stamp"><span>XDINARY HEROES</span><span>BREAK THE BRAKE</span></div>
+      </article>
+
+      <article class="poster" style="--tilt:2deg">
+        <div class="ph"><span class="album-no">[PHASE 4]</span><span class="album-tag">8TH MINI</span></div>
+        <h2>DEAD AND</h2>
+        <p class="release">2025.02.24 · TRACKLIST</p>
+        <ul class="tracklist">
+          <li class="is-title" data-seed="13"><span class="num">01</span><span class="title">Helium Balloon</span><span class="play-ico">▶</span></li>
+          <li data-seed="14"><span class="num">02</span><span class="title">Voyager</span><span class="play-ico">▶</span></li>
+          <li data-seed="15"><span class="num">03</span><span class="title">Rise High Rise</span><span class="play-ico">▶</span></li>
+          <li data-seed="16"><span class="num">04</span><span class="title">Must Be Good</span><span class="play-ico">▶</span></li>
+          <li data-seed="17"><span class="num">05</span><span class="title">X-room</span><span class="play-ico">▶</span></li>
+        </ul>
+        <div class="footer-stamp"><span>XDINARY HEROES</span><span>WE ARE ALL HEROES</span></div>
+      </article>
+
+    </div>
+  </div>
+
+  <div class="now-playing" id="nowPlaying">
+    <div class="eq"><span></span><span></span><span></span><span></span></div>
+    <div class="np-text"><b id="npTitle">—</b><small id="npAlbum">NOW PLAYING</small></div>
+    <span class="np-stop" id="npStop">✕</span>
+  </div>
+
+  <script src="assets/js/archive.js"></script>
+</body>
+</html>

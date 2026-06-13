@@ -1,0 +1,128 @@
+/* ===== Xdinary Heroes Fansite — Common Styles ===== */
+:root {
+  --bg: #0a0c12;
+  --bg-soft: #141821;
+  --card: rgba(255, 255, 255, 0.04);
+  --card-hover: rgba(255, 255, 255, 0.08);
+  --text: #f3f5f8;
+  --text-dim: #9aa3b2;
+  --accent: #4f7dff;
+  --accent-glow: rgba(79, 125, 255, 0.45);
+  --radius: 18px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* starfield background */
+.starfield {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(1200px 800px at 80% -10%, #1b2236 0%, transparent 60%),
+    radial-gradient(900px 700px at 10% 110%, #161b2b 0%, transparent 60%),
+    var(--bg);
+}
+.starfield::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, #fff 50%, transparent),
+    radial-gradient(1px 1px at 70% 80%, #cdd6ff 50%, transparent),
+    radial-gradient(1px 1px at 40% 60%, #fff 50%, transparent),
+    radial-gradient(1px 1px at 90% 20%, #aab4ff 50%, transparent),
+    radial-gradient(1px 1px at 60% 10%, #fff 50%, transparent),
+    radial-gradient(1px 1px at 30% 90%, #fff 50%, transparent);
+  background-repeat: repeat;
+  background-size: 600px 600px;
+  opacity: 0.5;
+  animation: drift 120s linear infinite;
+}
+@keyframes drift { to { transform: translateY(-600px); } }
+
+/* top nav shared across pages */
+.site-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 36px;
+  background: linear-gradient(to bottom, rgba(10, 12, 18, 0.9), transparent);
+  backdrop-filter: blur(6px);
+}
+.site-nav .brand {
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  font-size: 18px;
+}
+.site-nav .brand b { color: var(--accent); }
+.site-nav ul { display: flex; gap: 26px; list-style: none; }
+.site-nav a {
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.site-nav a:hover, .site-nav a.active { color: var(--text); }
+
+/* page header block */
+.page-head { padding: 120px 60px 30px; }
+.page-head h1 {
+  font-size: clamp(34px, 5vw, 64px);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.page-head p {
+  margin-top: 10px;
+  color: var(--text-dim);
+  font-size: clamp(14px, 1.6vw, 20px);
+}
+
+/* reusable rounded info card (matches the deck) */
+.info-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 26px 30px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text);
+  cursor: pointer;
+  background: transparent;
+  transition: background 0.2s, border-color 0.2s;
+}
+.btn-ghost:hover { background: var(--card-hover); border-color: var(--accent); }
+
+@media (max-width: 720px) {
+  .site-nav { padding: 14px 18px; }
+  .site-nav ul { gap: 14px; }
+  .page-head { padding: 100px 22px 20px; }
+}
