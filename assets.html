@@ -8,70 +8,38 @@
   <link rel="stylesheet" href="assets/css/common.css" />
   <style>
     body { background:#0a0c12; overflow-y:auto; }
-    .wrap { max-width: 1080px; margin: 0 auto; padding: 70px 24px 120px; }
-    .home-link { position:fixed; left:24px; top:22px; z-index:60; font-size:12px;
-      letter-spacing:0.15em; color:rgba(255,255,255,0.6); }
+    .wrap { max-width:1080px; margin:0 auto; padding:70px 24px 120px; }
+    .home-link { position:fixed; left:24px; top:22px; z-index:60; font-size:12px; letter-spacing:0.15em; color:rgba(255,255,255,0.6); }
     .home-link:hover { color:#fff; }
-    h1 { font-size: clamp(30px,5vw,52px); font-weight:800; letter-spacing:0.03em; }
-    .lead { color: var(--text-dim); margin-top:10px; line-height:1.8; max-width:760px; }
-    .steps { margin:18px 0 6px; padding:18px 22px; background:var(--card); border-radius:14px;
-      border:1px solid rgba(255,255,255,0.06); color:var(--text-dim); line-height:1.9; font-size:14px; }
-    .steps b { color:#fff; }
-    .steps code { background:rgba(255,255,255,0.08); padding:2px 7px; border-radius:6px; color:#cdd6ff; }
-
-    section.group { margin-top: 38px; }
+    h1 { font-size:clamp(30px,5vw,52px); font-weight:800; letter-spacing:0.03em; }
+    .lead { color:var(--text-dim); margin-top:10px; line-height:1.8; max-width:760px; }
+    .steps { margin:18px 0 6px; padding:18px 22px; background:var(--card); border-radius:14px; border:1px solid rgba(255,255,255,0.06); color:var(--text-dim); line-height:1.9; font-size:14px; }
+    .steps b { color:#fff; } .steps code { background:rgba(255,255,255,0.08); padding:2px 7px; border-radius:6px; color:#cdd6ff; }
+    section.group { margin-top:38px; }
     section.group > h2 { font-size:20px; letter-spacing:0.04em; margin-bottom:6px; }
     section.group > .gsub { color:var(--text-dim); font-size:13px; margin-bottom:16px; }
-
-    .row {
-      display:grid; grid-template-columns: 150px 1fr; gap:18px; align-items:start;
-      padding:16px; border-radius:14px; background:var(--card);
-      border:1px solid rgba(255,255,255,0.05); margin-bottom:14px;
-    }
-    .row .preview {
-      width:150px; height:90px; border-radius:10px; overflow:hidden; background:#06080e;
-      border:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center;
-    }
+    .row { display:grid; grid-template-columns:150px 1fr; gap:18px; align-items:start; padding:16px; border-radius:14px; background:var(--card); border:1px solid rgba(255,255,255,0.05); margin-bottom:14px; }
+    .row .preview { width:150px; height:90px; border-radius:10px; overflow:hidden; background:#06080e; border:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; }
     .row .preview img, .row .preview video { width:100%; height:100%; object-fit:contain; }
     .row .preview.audio { color:var(--text-dim); font-size:11px; text-align:center; padding:6px; }
     .row .fields { display:flex; flex-direction:column; gap:10px; }
     .row .flabel { font-size:13px; color:#fff; font-weight:600; }
     .row .flabel small { color:var(--text-dim); font-weight:400; margin-left:8px; }
     .row .ctrls { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-    .row input[type=text], .row input[type=number] {
-      flex:1; min-width:220px; background:#06080e; border:1px solid rgba(255,255,255,0.14);
-      border-radius:8px; padding:9px 12px; color:#fff; font-size:13px; font-family:monospace;
-    }
+    .row input[type=text], .row input[type=number] { flex:1; min-width:200px; background:#06080e; border:1px solid rgba(255,255,255,0.14); border-radius:8px; padding:9px 12px; color:#fff; font-size:13px; font-family:monospace; }
     .row input[type=number] { min-width:90px; max-width:120px; flex:0; }
+    .row input.short { min-width:150px; max-width:200px; flex:0; }
     .row input:focus { outline:none; border-color:var(--accent); }
-    .filebtn {
-      display:inline-flex; align-items:center; gap:6px; padding:9px 14px; border-radius:8px;
-      border:1px solid rgba(255,255,255,0.16); color:#fff; font-size:12px; cursor:pointer; white-space:nowrap;
-    }
-    .filebtn:hover { border-color:var(--accent); }
-    .filebtn input { display:none; }
-    audio.aud { width:100%; margin-top:4px; }
-
-    .actionbar {
-      position:sticky; bottom:0; margin-top:34px; padding:16px 0;
-      background:linear-gradient(transparent, #0a0c12 30%);
-      display:flex; gap:12px; flex-wrap:wrap;
-    }
-    .btn-primary {
-      padding:13px 22px; border-radius:999px; border:none; cursor:pointer; font-size:14px; font-weight:600;
-      background:var(--accent); color:#fff;
-    }
+    .filebtn { display:inline-flex; align-items:center; gap:6px; padding:9px 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.16); color:#fff; font-size:12px; cursor:pointer; white-space:nowrap; }
+    .filebtn:hover { border-color:var(--accent); } .filebtn input { display:none; }
+    .note { padding:16px 18px; background:rgba(79,125,255,0.08); border:1px solid rgba(79,125,255,0.25); border-radius:12px; color:#cdd6ff; font-size:13px; line-height:1.8; }
+    .actionbar { position:sticky; bottom:0; margin-top:34px; padding:16px 0; background:linear-gradient(transparent,#0a0c12 30%); display:flex; gap:12px; flex-wrap:wrap; }
+    .btn-primary { padding:13px 22px; border-radius:999px; border:none; cursor:pointer; font-size:14px; font-weight:600; background:var(--accent); color:#fff; }
     .btn-primary:hover { filter:brightness(1.1); }
-    .output { margin-top:18px; display:none; }
-    .output.show { display:block; }
-    .output textarea {
-      width:100%; height:280px; background:#06080e; border:1px solid rgba(255,255,255,0.14);
-      border-radius:12px; padding:16px; color:#cdd6ff; font-family:monospace; font-size:12.5px; line-height:1.6;
-    }
+    .output { margin-top:18px; display:none; } .output.show { display:block; }
+    .output textarea { width:100%; height:300px; background:#06080e; border:1px solid rgba(255,255,255,0.14); border-radius:12px; padding:16px; color:#cdd6ff; font-family:monospace; font-size:12.5px; line-height:1.6; }
     .out-actions { display:flex; gap:10px; margin-top:10px; }
-    .toast { position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(120%);
-      background:#1c2233; border:1px solid var(--accent); color:#fff; padding:12px 22px; border-radius:999px;
-      transition:transform .3s; z-index:200; }
+    .toast { position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(120%); background:#1c2233; border:1px solid var(--accent); color:#fff; padding:12px 22px; border-radius:999px; transition:transform .3s; z-index:200; }
     .toast.show { transform:translateX(-50%) translateY(0); }
   </style>
 </head>
@@ -79,14 +47,13 @@
   <a class="home-link" href="index.html">‹ HOME</a>
   <div class="wrap">
     <h1>에셋 관리</h1>
-    <p class="lead">모든 로고·영상·오디오를 한 곳에서 교체합니다. 칸에 <b>URL</b>을 붙여넣거나 <b>파일 선택</b>으로 미리보기 한 뒤,
-       아래 <b>media.js 생성</b>으로 코드를 만들어 <code>assets/js/media.js</code> 에 덮어쓰면 모든 페이지에 바로 적용됩니다.</p>
-
+    <p class="lead">로고·영상·유튜브 비하인드·트랙 오디오를 한 곳에서 교체합니다. 값을 바꾼 뒤 아래 <b>media.js 생성</b>으로 코드를 만들어 <code>assets/js/media.js</code> 에 덮어쓰면 모든 페이지에 적용됩니다.</p>
     <div class="steps">
-      <b>적용 방법 2가지</b><br>
-      ① <b>가장 쉬움</b> — 실제 파일을 기존과 <b>같은 이름</b>으로 <code>assets/media/</code> 에 덮어쓰기 (코드 변경 0)<br>
-      ② <b>경로/URL 교체</b> — 아래 칸에 경로나 외부 URL 입력 → <b>media.js 생성</b> → <code>assets/js/media.js</code> 에 붙여넣기<br>
-      <small>※ 파일 선택은 이 페이지에서 <b>미리보기 전용</b>입니다(브라우저 보안상 임시 주소). 실제 적용은 ①의 경로나 ②의 URL로 하세요.</small>
+      <b>적용 방법</b><br>
+      ① 로고/영상 — 같은 이름으로 <code>assets/media/</code> 에 덮어쓰거나, 칸에 경로/URL 입력<br>
+      ② 비하인드 — 유튜브 <b>영상 ID</b> 입력(임베드 재생, 제목 자동)<br>
+      ③ 트랙 오디오 — 기본은 데모 합성음. 실제 음원은 <b>seed 번호 + URL</b>로 추가<br>
+      <small>※ 파일 선택은 미리보기 전용입니다. 영구 적용은 경로/URL 또는 같은 이름 파일 교체로 하세요.</small>
     </div>
 
     <div id="groups"></div>
@@ -95,7 +62,6 @@
       <button class="btn-primary" id="genBtn">📄 media.js 생성</button>
       <button class="btn-ghost" id="resetBtn">기본값으로 되돌리기</button>
     </div>
-
     <div class="output" id="output">
       <textarea id="outText" spellcheck="false" readonly></textarea>
       <div class="out-actions">
@@ -104,59 +70,42 @@
       </div>
     </div>
   </div>
-
   <div class="toast" id="toast">복사됨</div>
 
   <script src="assets/js/media.js"></script>
   <script>
   (function () {
-    // deep clone defaults so "reset" works
     const DEFAULTS = JSON.parse(JSON.stringify(window.MEDIA));
     let state = JSON.parse(JSON.stringify(window.MEDIA));
-
-    const TRACK_NAMES = {1:"Knock Down",2:"X-MAS",3:"Crack",4:"Don't Be Sad",5:"Hair Cut",6:"Pin",
-      7:"Strawberry Cake",8:"おかえり",9:"Break the Brake",10:"Freedom",11:"Sucker Punch",12:"Devil",
-      13:"Helium Balloon",14:"Voyager",15:"Rise High Rise",16:"Must Be Good",17:"X-room"};
-    const BEHIND_LABELS = {main:"메인 피처 클립",practice:"합주 비하인드",mv:"MV 메이킹",jacket:"재킷 촬영",tour:"투어 다이어리"};
-
     const groups = document.getElementById('groups');
 
-    function preview(kind, url) {
-      if (kind === 'img') return `<img src="${url}" onerror="this.style.opacity=.2">`;
-      if (kind === 'video') return `<video src="${url}" muted loop playsinline autoplay onerror="this.style.opacity=.2"></video>`;
-      return `<div class="audio">🎵<br>오디오</div>`;
+    function previewHTML(kind, url) {
+      if (!url) return '';
+      if (kind === 'img') return '<img src="' + url + '" onerror="this.style.opacity=.2">';
+      if (kind === 'video') return '<video src="' + url + '" muted loop playsinline autoplay onerror="this.style.opacity=.2"></video>';
+      if (kind === 'yt') return '<img src="https://i.ytimg.com/vi/' + url + '/mqdefault.jpg" onerror="this.style.opacity=.2">';
+      return '<div class="audio">🎵<br>오디오</div>';
     }
 
-    // build a single editable field row
-    function row({ thumbKind, label, sub, value, onText, fileAccept, extra }) {
-      const wrap = document.createElement('div');
-      wrap.className = 'row';
-      const pv = document.createElement('div');
-      pv.className = 'preview' + (thumbKind === 'audio' ? ' audio' : '');
-      pv.innerHTML = preview(thumbKind, value);
-      const fields = document.createElement('div');
-      fields.className = 'fields';
-      fields.innerHTML = `<div class="flabel">${label}${sub ? ` <small>${sub}</small>` : ''}</div>`;
-      const ctrls = document.createElement('div');
-      ctrls.className = 'ctrls';
-      const input = document.createElement('input');
-      input.type = 'text'; input.value = value;
-      input.addEventListener('input', () => { onText(input.value); pv.innerHTML = preview(thumbKind, input.value); });
-      const fileLabel = document.createElement('label');
-      fileLabel.className = 'filebtn';
-      fileLabel.innerHTML = '📁 파일 선택<input type="file" accept="' + fileAccept + '">';
+    // generic media row (logo / video)
+    function mediaRow(o) {
+      const wrap = document.createElement('div'); wrap.className = 'row';
+      const pv = document.createElement('div'); pv.className = 'preview' + (o.thumbKind === 'audio' ? ' audio' : '');
+      pv.innerHTML = previewHTML(o.thumbKind, o.value);
+      const fields = document.createElement('div'); fields.className = 'fields';
+      fields.innerHTML = '<div class="flabel">' + o.label + (o.sub ? ' <small>' + o.sub + '</small>' : '') + '</div>';
+      const ctrls = document.createElement('div'); ctrls.className = 'ctrls';
+      const input = document.createElement('input'); input.type = 'text'; input.value = o.value || '';
+      input.addEventListener('input', () => { o.onText(input.value); pv.innerHTML = previewHTML(o.thumbKind, input.value); });
+      const fileLabel = document.createElement('label'); fileLabel.className = 'filebtn';
+      fileLabel.innerHTML = '📁 파일<input type="file" accept="' + o.fileAccept + '">';
       fileLabel.querySelector('input').addEventListener('change', (e) => {
-        const f = e.target.files[0]; if (!f) return;
-        const u = URL.createObjectURL(f);
-        pv.innerHTML = preview(thumbKind, u);             // preview only
-        if (!input.value || input.value === value) input.placeholder = f.name;
-        if (thumbKind === 'audio') { pv.innerHTML = '<audio class="aud" controls src="' + u + '"></audio>'; }
+        const f = e.target.files[0]; if (!f) return; const u = URL.createObjectURL(f);
+        pv.innerHTML = o.thumbKind === 'audio' ? '<audio controls src="' + u + '" style="width:100%"></audio>' : previewHTML(o.thumbKind, u);
       });
-      ctrls.appendChild(input);
-      ctrls.appendChild(fileLabel);
-      if (extra) ctrls.appendChild(extra);
-      fields.appendChild(ctrls);
-      wrap.appendChild(pv); wrap.appendChild(fields);
+      ctrls.appendChild(input); ctrls.appendChild(fileLabel);
+      if (o.extra) ctrls.appendChild(o.extra);
+      fields.appendChild(ctrls); wrap.appendChild(pv); wrap.appendChild(fields);
       return wrap;
     }
 
@@ -165,55 +114,67 @@
 
       // DISCOGRAPHY
       let g = document.createElement('section'); g.className = 'group';
-      g.innerHTML = '<h2>DISCOGRAPHY</h2><div class="gsub">앨범별 중앙 로고 + 전체화면 배경 영상 + 후렴 시작초</div>';
+      g.innerHTML = '<h2>DISCOGRAPHY</h2><div class="gsub">앨범별 중앙 로고 + 전체화면 배경 영상</div>';
       state.discography.forEach((c, i) => {
-        const startInput = document.createElement('input');
-        startInput.type = 'number'; startInput.min = '0'; startInput.value = c.start || 0;
-        startInput.title = '후렴 시작(초)';
-        startInput.addEventListener('input', () => { state.discography[i].start = Number(startInput.value) || 0; });
-        g.appendChild(row({ thumbKind:'img', label:c.label + ' — 로고', value:c.logo, fileAccept:'image/*,.svg',
-          onText:(v)=>state.discography[i].logo=v }));
-        g.appendChild(row({ thumbKind:'video', label:c.label + ' — 배경 영상', sub:'start(초) →', value:c.video,
-          fileAccept:'video/*', onText:(v)=>state.discography[i].video=v, extra:startInput }));
+        g.appendChild(mediaRow({ thumbKind:'img', label:c.label + ' — 로고', value:c.logo, fileAccept:'image/*,.svg', onText:(v)=>state.discography[i].logo=v }));
+        g.appendChild(mediaRow({ thumbKind:'video', label:c.label + ' — 배경 영상', value:c.video, fileAccept:'video/*', onText:(v)=>state.discography[i].video=v }));
+      });
+      groups.appendChild(g);
+
+      // BEHIND (YouTube)
+      g = document.createElement('section'); g.className = 'group';
+      g.innerHTML = '<h2>BEHIND THE SCENE</h2><div class="gsub">유튜브 비하인드 영상 (영상 ID)</div>';
+      state.behind.forEach((c, i) => {
+        const labelInput = document.createElement('input'); labelInput.type = 'text'; labelInput.className = 'short';
+        labelInput.placeholder = '표시 이름(선택)'; labelInput.value = c.label || '';
+        labelInput.addEventListener('input', () => { state.behind[i].label = labelInput.value; });
+        g.appendChild(mediaRow({ thumbKind:'yt', label:'비하인드 ' + (i + 1) + ' — YouTube ID', sub:'예: 4N9Ir4X9RTc',
+          value:c.id, fileAccept:'', onText:(v)=>{ state.behind[i].id = v.trim(); }, extra:labelInput }));
       });
       groups.appendChild(g);
 
       // ARCHIVE
       g = document.createElement('section'); g.className = 'group';
-      g.innerHTML = '<h2>ARCHIVE</h2><div class="gsub">트랙별 오디오 (곡명 클릭 시 재생)</div>';
-      Object.keys(state.archive).forEach((seed) => {
-        g.appendChild(row({ thumbKind:'audio', label:`#${seed} ${TRACK_NAMES[seed]||''}`, value:state.archive[seed],
-          fileAccept:'audio/*', onText:(v)=>state.archive[seed]=v }));
-      });
-      groups.appendChild(g);
-
-      // BEHIND
-      g = document.createElement('section'); g.className = 'group';
-      g.innerHTML = '<h2>BEHIND THE SCENE</h2><div class="gsub">비하인드 영상</div>';
-      Object.keys(state.behind).forEach((key) => {
-        g.appendChild(row({ thumbKind:'video', label:`${BEHIND_LABELS[key]||key}`, sub:key, value:state.behind[key],
-          fileAccept:'video/*', onText:(v)=>state.behind[key]=v }));
-      });
-      groups.appendChild(g);
+      g.innerHTML = '<h2>ARCHIVE</h2><div class="gsub">트랙 오디오 (곡 제목 클릭 시 재생)</div>';
+      const note = document.createElement('div'); note.className = 'note';
+      note.innerHTML = '기본적으로 모든 트랙은 <b>데모 합성음</b>으로 재생됩니다(파일 불필요).<br>' +
+        '특정 곡에 실제 음원을 넣으려면 아래에 <b>트랙 번호(seed)</b>와 <b>오디오 URL</b>을 추가하세요. ' +
+        'seed는 archive 페이지에서 첫 앨범 1번부터 순서대로 매겨집니다.';
+      g.appendChild(note);
+      const list = document.createElement('div'); list.id = 'archList'; list.style.marginTop = '14px'; g.appendChild(list);
+      function renderArch() {
+        list.innerHTML = '';
+        Object.keys(state.archive).forEach((seed) => {
+          list.appendChild(mediaRow({ thumbKind:'audio', label:'seed #' + seed, value:state.archive[seed],
+            fileAccept:'audio/*', onText:(v)=>state.archive[seed]=v }));
+        });
+      }
+      const adder = document.createElement('div'); adder.className = 'ctrls'; adder.style.marginTop = '12px';
+      const sIn = document.createElement('input'); sIn.type = 'number'; sIn.min = '1'; sIn.placeholder = 'seed #';
+      const uIn = document.createElement('input'); uIn.type = 'text'; uIn.placeholder = '오디오 URL';
+      const addBtn = document.createElement('button'); addBtn.className = 'btn-ghost'; addBtn.textContent = '+ 추가';
+      addBtn.addEventListener('click', () => { const s = parseInt(sIn.value, 10); if (!s) return; state.archive[s] = uIn.value.trim(); sIn.value = ''; uIn.value = ''; renderArch(); });
+      adder.appendChild(sIn); adder.appendChild(uIn); adder.appendChild(addBtn);
+      g.appendChild(adder); groups.appendChild(g); renderArch();
     }
 
     function generate() {
       const disco = state.discography.map(c =>
-        `    { key: ${JSON.stringify(c.key)}, label: ${JSON.stringify(c.label)}, logo: ${JSON.stringify(c.logo)}, video: ${JSON.stringify(c.video)}, start: ${Number(c.start)||0} }`
+        '    { key: ' + JSON.stringify(c.key) + ', label: ' + JSON.stringify(c.label) +
+        ', logo: ' + JSON.stringify(c.logo) + ', video: ' + JSON.stringify(c.video) + ', start: ' + (Number(c.start) || 0) + ' }'
       ).join(',\n');
-      const arch = Object.keys(state.archive).map(k =>
-        `    ${JSON.stringify(k)}: ${JSON.stringify(state.archive[k])}`).join(',\n');
-      const beh = Object.keys(state.behind).map(k =>
-        `    ${k}: ${JSON.stringify(state.behind[k])}`).join(',\n');
-      return `/* 중앙 미디어 설정 — 에셋 관리 페이지에서 생성됨 */\nwindow.MEDIA = {\n  discography: [\n${disco}\n  ],\n  archive: {\n${arch}\n  },\n  behind: {\n${beh}\n  }\n};\n`;
+      const archKeys = Object.keys(state.archive);
+      const arch = archKeys.map(k => '    ' + JSON.stringify(k) + ': ' + JSON.stringify(state.archive[k])).join(',\n');
+      const beh = state.behind.map(c => '    { id: ' + JSON.stringify(c.id) + ', label: ' + JSON.stringify(c.label || '') + ' }').join(',\n');
+      return '/* 중앙 미디어 설정 — 에셋 관리 페이지에서 생성됨 */\nwindow.MEDIA = {\n' +
+        '  discography: [\n' + disco + '\n  ],\n\n' +
+        '  archive: {\n' + arch + (arch ? '\n' : '') + '  },\n\n' +
+        '  behind: [\n' + beh + '\n  ]\n};\n';
     }
 
-    const output = document.getElementById('output');
-    const outText = document.getElementById('outText');
+    const output = document.getElementById('output'), outText = document.getElementById('outText');
     document.getElementById('genBtn').addEventListener('click', () => {
-      outText.value = generate();
-      output.classList.add('show');
-      output.scrollIntoView({ behavior:'smooth', block:'center' });
+      outText.value = generate(); output.classList.add('show'); output.scrollIntoView({ behavior:'smooth', block:'center' });
     });
     document.getElementById('copyBtn').addEventListener('click', async () => {
       try { await navigator.clipboard.writeText(outText.value); } catch (e) { outText.select(); document.execCommand('copy'); }
@@ -221,16 +182,12 @@
     });
     document.getElementById('dlBtn').addEventListener('click', () => {
       const blob = new Blob([outText.value], { type:'text/javascript' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob); a.download = 'media.js'; a.click();
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'media.js'; a.click();
     });
-    document.getElementById('resetBtn').addEventListener('click', () => {
-      state = JSON.parse(JSON.stringify(DEFAULTS)); render(); toast('기본값으로 되돌렸습니다');
-    });
+    document.getElementById('resetBtn').addEventListener('click', () => { state = JSON.parse(JSON.stringify(DEFAULTS)); render(); toast('기본값으로 되돌렸습니다'); });
 
-    const toastEl = document.getElementById('toast');
-    let tt;
-    function toast(msg) { toastEl.textContent = msg; toastEl.classList.add('show'); clearTimeout(tt); tt = setTimeout(()=>toastEl.classList.remove('show'), 1800); }
+    const toastEl = document.getElementById('toast'); let tt;
+    function toast(msg) { toastEl.textContent = msg; toastEl.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => toastEl.classList.remove('show'), 1800); }
 
     render();
   })();

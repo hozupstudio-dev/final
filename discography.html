@@ -7,105 +7,57 @@
   <link rel="icon" href="data:,"/>
   <link rel="stylesheet" href="assets/css/common.css" />
   <style>
-    html, body { height: 100%; }
+    html, body { height:100%; }
     body { background:#05060a; overflow:hidden; }
-
-    /* vertical scroll-snap deck: one full-screen video per album */
-    .deck {
-      height: 100vh;
-      overflow-y: scroll;
-      scroll-snap-type: y mandatory;
-      scrollbar-width: none;
-    }
+    .deck { height:100vh; overflow-y:scroll; scroll-snap-type:y mandatory; scrollbar-width:none; }
     .deck::-webkit-scrollbar { display:none; }
+    .album { position:relative; height:100vh; scroll-snap-align:start; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .album video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; }
+    .album .bg-fallback { position:absolute; inset:0; z-index:0; background:var(--cover, linear-gradient(135deg,#1a2238,#0c1020)); }
+    .album .scrim { position:absolute; inset:0; z-index:1; background:radial-gradient(60% 60% at 50% 50%, rgba(0,0,0,0.12), rgba(0,0,0,0.58)); }
 
-    .album {
-      position: relative;
-      height: 100vh;
-      scroll-snap-align: start;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-    .album video {
-      position:absolute; inset:0; width:100%; height:100%;
-      object-fit: cover; z-index:0;
-    }
-    /* fallback tint shown until/if the video paints */
-    .album .bg-fallback {
-      position:absolute; inset:0; z-index:0;
-      background: var(--cover, linear-gradient(135deg,#1a2238,#0c1020));
-    }
-    .album .scrim {
-      position:absolute; inset:0; z-index:1;
-      background: radial-gradient(60% 60% at 50% 50%, rgba(0,0,0,0.15), rgba(0,0,0,0.55));
-    }
+    /* centered block: logo image + tight meta (year / ordinal / album name) */
+    .album .center { position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; gap:14px;
+      opacity:0; transform:translateY(24px) scale(0.98); transition:opacity .9s ease, transform .9s ease; }
+    .album.in-view .center { opacity:1; transform:none; }
+    .album .logo { width:min(150px,32vw); filter:drop-shadow(0 0 22px rgba(120,150,255,0.4)); }
+    .album .meta { text-align:center; line-height:1.12; }
+    .album .meta .year { display:block; font-size:13px; letter-spacing:0.28em; color:var(--ac,#9aa3b2); }
+    .album .meta .ordinal { display:block; font-size:12px; letter-spacing:0.2em; text-transform:uppercase; color:var(--text-dim); margin-top:6px; }
+    .album .meta .title { font-size:clamp(30px,4.4vw,56px); font-weight:800; letter-spacing:0.01em; margin-top:6px; }
 
-    /* centered album logo */
-    .album .logo {
-      position: relative; z-index:2;
-      width: min(560px, 78vw);
-      opacity: 0; transform: translateY(24px) scale(0.98);
-      transition: opacity 0.9s ease, transform 0.9s ease;
-      filter: drop-shadow(0 0 26px rgba(120,150,255,0.45));
-      pointer-events:none;
-    }
-    .album.in-view .logo { opacity:1; transform:none; }
+    /* progress dots */
+    .dots { position:fixed; right:26px; top:50%; transform:translateY(-50%); z-index:50; display:flex; flex-direction:column; gap:11px; }
+    .dots button { width:9px; height:9px; border-radius:50%; border:1px solid rgba(255,255,255,0.5); background:transparent; cursor:pointer; padding:0; transition:all .25s; }
+    .dots button.active { background:#fff; box-shadow:0 0 12px rgba(255,255,255,0.7); transform:scale(1.25); }
 
-    /* now-playing chip per album */
-    .album .live-chip {
-      position:absolute; left:50%; bottom:64px; transform:translateX(-50%);
-      z-index:2; display:flex; align-items:center; gap:10px;
-      font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:#cfd6e6;
-      background:rgba(0,0,0,0.35); padding:8px 16px; border-radius:999px;
-      backdrop-filter: blur(5px); opacity:0; transition:opacity .6s;
-    }
-    .album.in-view .live-chip { opacity:1; }
-    .live-chip .live { width:8px;height:8px;border-radius:50%;background:#ff4d6a;box-shadow:0 0 10px #ff4d6a; }
-    .album.playing .live-chip .live { animation: blink 1s infinite; }
-    @keyframes blink { 0%,100%{opacity:.3} 50%{opacity:1} }
-    .live-chip .wave { display:flex; align-items:flex-end; gap:3px; height:12px; }
-    .live-chip .wave span { width:3px; height:30%; background:var(--accent); border-radius:2px; }
-    .album.playing .live-chip .wave span { animation: wv .9s ease-in-out infinite; }
-    .live-chip .wave span:nth-child(2){animation-delay:.15s}
-    .live-chip .wave span:nth-child(3){animation-delay:.3s}
-    @keyframes wv { 0%,100%{height:30%} 50%{height:100%} }
-
-    /* page-side progress dots */
-    .dots {
-      position: fixed; right: 26px; top:50%; transform:translateY(-50%);
-      z-index: 50; display:flex; flex-direction:column; gap:14px;
-    }
-    .dots button {
-      width:10px; height:10px; border-radius:50%; border:1px solid rgba(255,255,255,0.5);
-      background:transparent; cursor:pointer; padding:0; transition:all .25s;
-    }
-    .dots button.active { background:#fff; box-shadow:0 0 12px rgba(255,255,255,0.7); transform:scale(1.2); }
-
-    /* scroll hint (first screen only) */
-    .scroll-cue {
-      position: fixed; left:50%; bottom:26px; transform:translateX(-50%);
-      z-index:50; color:rgba(255,255,255,0.7); font-size:12px; letter-spacing:0.2em;
-      text-transform:uppercase; display:flex; flex-direction:column; align-items:center; gap:6px;
-      transition: opacity .4s;
-    }
-    .scroll-cue .arrow { animation: bob 1.6s ease-in-out infinite; }
+    .scroll-cue { position:fixed; left:50%; bottom:84px; transform:translateX(-50%); z-index:50; color:rgba(255,255,255,0.65);
+      font-size:11px; letter-spacing:0.2em; text-transform:uppercase; display:flex; flex-direction:column; align-items:center; gap:5px; transition:opacity .4s; }
+    .scroll-cue .arrow { animation:bob 1.6s ease-in-out infinite; }
     @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
 
-    /* sound toggle */
-    .sound-toggle {
-      position: fixed; right: 26px; bottom: 26px; z-index: 60;
-      display:flex; align-items:center; gap:10px; padding:12px 18px; border-radius:999px;
-      background: rgba(15,18,26,0.8); border:1px solid rgba(255,255,255,0.14);
-      cursor:pointer; backdrop-filter: blur(8px); font-size:13px;
-    }
-    .sound-toggle:hover { border-color: var(--accent); }
+    /* bottom-center sound motion icon — doubles as mute toggle + visual state */
+    .sound-ctrl { position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:60;
+      display:flex; align-items:center; gap:12px; padding:10px 18px; border-radius:999px; cursor:pointer;
+      background:rgba(10,12,18,0.55); border:1px solid rgba(255,255,255,0.14); backdrop-filter:blur(6px);
+      color:#cfd6e6; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; user-select:none; }
+    .sound-ctrl:hover { border-color:var(--accent); }
+    .sound-ctrl .bars { display:flex; align-items:flex-end; gap:3px; height:18px; }
+    .sound-ctrl .bars span { width:3px; height:30%; background:var(--accent); border-radius:2px; }
+    /* unmuted → animated bars */
+    .sound-ctrl.on .bars span { animation:wv .9s ease-in-out infinite; }
+    .sound-ctrl.on .bars span:nth-child(2){animation-delay:.15s}
+    .sound-ctrl.on .bars span:nth-child(3){animation-delay:.3s}
+    .sound-ctrl.on .bars span:nth-child(4){animation-delay:.45s}
+    @keyframes wv { 0%,100%{height:25%} 50%{height:100%} }
+    /* muted → flat dim bars + strikethrough */
+    .sound-ctrl.off .bars span { height:30%; opacity:0.35; }
+    .sound-ctrl.off .bars::after { content:""; }
+    .sound-ctrl .state-on { display:none; } .sound-ctrl .state-off { display:inline; }
+    .sound-ctrl.on .state-on { display:inline; } .sound-ctrl.on .state-off { display:none; }
+    .sound-ctrl.off { opacity:0.85; }
 
-    .home-link {
-      position: fixed; left:24px; top:22px; z-index:60;
-      font-size:12px; letter-spacing:0.15em; color:rgba(255,255,255,0.6);
-    }
+    .home-link { position:fixed; left:24px; top:22px; z-index:60; font-size:12px; letter-spacing:0.15em; color:rgba(255,255,255,0.6); }
     .home-link:hover { color:#fff; }
   </style>
 </head>
@@ -113,52 +65,133 @@
   <a class="home-link" href="index.html">‹ HOME</a>
 
   <div class="deck" id="deck">
-    <section class="album in-view" data-start="42" data-dot="0" style="--cover:linear-gradient(135deg,#241a3a,#0c1020)">
+    <section class="album in-view" data-dot="0" style="--cover:linear-gradient(135deg,#4f7dff22,#0c1020); --ac:#4f7dff">
       <div class="bg-fallback"></div>
-      <video muted loop playsinline preload="auto" data-src="assets/media/troubleshooting.mp4"></video>
+      <video muted loop playsinline preload="auto" data-src="assets/media/disco/hello.mp4"></video>
       <div class="scrim"></div>
-      <img class="logo" src="assets/media/logos/hello.svg" alt="Hello, world!" />
-      <div class="live-chip"><span class="live"></span> Title Chorus
-        <span class="wave"><span></span><span></span><span></span></span></div>
+      <div class="center">
+        <img class="logo" src="assets/media/logos/hello.svg" alt="Hello, world! logo" />
+        <div class="meta">
+          <span class="year">2022</span>
+          <span class="ordinal">1st Mini Album</span>
+          <h2 class="title">Hello, world!</h2>
+        </div>
+      </div>
     </section>
-
-    <section class="album" data-start="50" data-dot="1" style="--cover:linear-gradient(135deg,#3a1a24,#0c1020)">
+    <section class="album" data-dot="1" style="--cover:linear-gradient(135deg,#ff4d6a22,#0c1020); --ac:#ff4d6a">
       <div class="bg-fallback"></div>
-      <video muted loop playsinline preload="auto" data-src="assets/media/hairdye.mp4"></video>
+      <video muted loop playsinline preload="auto" data-src="assets/media/disco/overload.mp4"></video>
       <div class="scrim"></div>
-      <img class="logo" src="assets/media/logos/overload.svg" alt="Overload" />
-      <div class="live-chip"><span class="live"></span> Title Chorus
-        <span class="wave"><span></span><span></span><span></span></span></div>
+      <div class="center">
+        <img class="logo" src="assets/media/logos/overload.svg" alt="Overload logo" />
+        <div class="meta">
+          <span class="year">2022</span>
+          <span class="ordinal">2nd Mini Album</span>
+          <h2 class="title">Overload</h2>
+        </div>
+      </div>
     </section>
-
-    <section class="album" data-start="38" data-dot="2" style="--cover:linear-gradient(135deg,#1a2e3a,#0c1020)">
+    <section class="album" data-dot="2" style="--cover:linear-gradient(135deg,#2fd6c022,#0c1020); --ac:#2fd6c0">
       <div class="bg-fallback"></div>
-      <video muted loop playsinline preload="auto" data-src="assets/media/breakthrough.mp4"></video>
+      <video muted loop playsinline preload="auto" data-src="assets/media/disco/deadlock.mp4"></video>
       <div class="scrim"></div>
-      <img class="logo" src="assets/media/logos/deadlock.svg" alt="Deadlock" />
-      <div class="live-chip"><span class="live"></span> Title Chorus
-        <span class="wave"><span></span><span></span><span></span></span></div>
+      <div class="center">
+        <img class="logo" src="assets/media/logos/deadlock.svg" alt="Deadlock logo" />
+        <div class="meta">
+          <span class="year">2023</span>
+          <span class="ordinal">3rd Mini Album</span>
+          <h2 class="title">Deadlock</h2>
+        </div>
+      </div>
     </section>
-
-    <section class="album" data-start="46" data-dot="3" style="--cover:linear-gradient(135deg,#2a2333,#0c1020)">
+    <section class="album" data-dot="3" style="--cover:linear-gradient(135deg,#e0b34f22,#0c1020); --ac:#e0b34f">
       <div class="bg-fallback"></div>
-      <video muted loop playsinline preload="auto" data-src="assets/media/deadand.mp4"></video>
+      <video muted loop playsinline preload="auto" data-src="assets/media/disco/livelock.mp4"></video>
       <div class="scrim"></div>
-      <img class="logo" src="assets/media/logos/deadand.svg" alt="DEAD AND" />
-      <div class="live-chip"><span class="live"></span> Title Chorus
-        <span class="wave"><span></span><span></span><span></span></span></div>
+      <div class="center">
+        <img class="logo" src="assets/media/logos/livelock.svg" alt="Livelock logo" />
+        <div class="meta">
+          <span class="year">2023</span>
+          <span class="ordinal">4th Mini Album</span>
+          <h2 class="title">Livelock</h2>
+        </div>
+      </div>
+    </section>
+    <section class="album" data-dot="4" style="--cover:linear-gradient(135deg,#8a6aff22,#0c1020); --ac:#8a6aff">
+      <div class="bg-fallback"></div>
+      <video muted loop playsinline preload="auto" data-src="assets/media/disco/troubleshooting.mp4"></video>
+      <div class="scrim"></div>
+      <div class="center">
+        <img class="logo" src="assets/media/logos/troubleshooting.svg" alt="Troubleshooting logo" />
+        <div class="meta">
+          <span class="year">2024</span>
+          <span class="ordinal">1st Full Album</span>
+          <h2 class="title">Troubleshooting</h2>
+        </div>
+      </div>
+    </section>
+    <section class="album" data-dot="5" style="--cover:linear-gradient(135deg,#ff8a4f22,#0c1020); --ac:#ff8a4f">
+      <div class="bg-fallback"></div>
+      <video muted loop playsinline preload="auto" data-src="assets/media/disco/liveandfall.mp4"></video>
+      <div class="scrim"></div>
+      <div class="center">
+        <img class="logo" src="assets/media/logos/liveandfall.svg" alt="LIVE and FALL logo" />
+        <div class="meta">
+          <span class="year">2024</span>
+          <span class="ordinal">5th Mini Album</span>
+          <h2 class="title">LIVE and FALL</h2>
+        </div>
+      </div>
+    </section>
+    <section class="album" data-dot="6" style="--cover:linear-gradient(135deg,#4fb0ff22,#0c1020); --ac:#4fb0ff">
+      <div class="bg-fallback"></div>
+      <video muted loop playsinline preload="auto" data-src="assets/media/disco/beautifulmind.mp4"></video>
+      <div class="scrim"></div>
+      <div class="center">
+        <img class="logo" src="assets/media/logos/beautifulmind.svg" alt="Beautiful Mind logo" />
+        <div class="meta">
+          <span class="year">2025</span>
+          <span class="ordinal">6th Mini Album</span>
+          <h2 class="title">Beautiful Mind</h2>
+        </div>
+      </div>
+    </section>
+    <section class="album" data-dot="7" style="--cover:linear-gradient(135deg,#ff4f9d22,#0c1020); --ac:#ff4f9d">
+      <div class="bg-fallback"></div>
+      <video muted loop playsinline preload="auto" data-src="assets/media/disco/lxvetodeath.mp4"></video>
+      <div class="scrim"></div>
+      <div class="center">
+        <img class="logo" src="assets/media/logos/lxvetodeath.svg" alt="LXVE to DEATH logo" />
+        <div class="meta">
+          <span class="year">2025</span>
+          <span class="ordinal">7th Mini Album</span>
+          <h2 class="title">LXVE to DEATH</h2>
+        </div>
+      </div>
+    </section>
+    <section class="album" data-dot="8" style="--cover:linear-gradient(135deg,#6a7bff22,#0c1020); --ac:#6a7bff">
+      <div class="bg-fallback"></div>
+      <video muted loop playsinline preload="auto" data-src="assets/media/disco/deadand.mp4"></video>
+      <div class="scrim"></div>
+      <div class="center">
+        <img class="logo" src="assets/media/logos/deadand.svg" alt="DEAD AND logo" />
+        <div class="meta">
+          <span class="year">2026</span>
+          <span class="ordinal">8th Mini Album</span>
+          <h2 class="title">DEAD AND</h2>
+        </div>
+      </div>
     </section>
   </div>
 
   <div class="dots" id="dots"></div>
+  <div class="scroll-cue" id="scrollCue"><span>Scroll</span><span class="arrow">▾</span></div>
 
-  <div class="scroll-cue" id="scrollCue">
-    <span>Scroll</span><span class="arrow">▾</span>
+  <!-- bottom-center motion icon = mute toggle + visual state -->
+  <div class="sound-ctrl off" id="soundCtrl" role="button" tabindex="0" aria-label="소리 켜기/끄기">
+    <span class="bars"><span></span><span></span><span></span><span></span></span>
+    <span class="state-off">SOUND OFF</span><span class="state-on">SOUND ON</span>
   </div>
-
-  <button class="sound-toggle" id="soundToggle">
-    <span id="soundIcon">🔇</span> <span id="soundLabel">소리 켜기</span>
-  </button>
 
   <script src="assets/js/media.js"></script>
   <script src="assets/js/discography.js"></script>

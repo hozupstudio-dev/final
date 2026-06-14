@@ -8,225 +8,223 @@
   <link rel="stylesheet" href="assets/css/common.css" />
   <style>
     body { background:#0c0c0e; }
-    /* gritty cement wall backdrop */
-    .wall {
-      position: fixed; inset: 0; z-index:-2;
-      background:
-        radial-gradient(900px 600px at 30% 20%, #26262a 0%, transparent 60%),
-        radial-gradient(700px 500px at 80% 90%, #1c1c1f 0%, transparent 60%),
-        #131315;
-    }
-    .wall::after {
-      content:""; position:absolute; inset:0; opacity:0.16;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    }
+    .wall { position:fixed; inset:0; z-index:-2;
+      background:radial-gradient(900px 600px at 30% 20%, #26262a 0%, transparent 60%),
+                 radial-gradient(700px 500px at 80% 90%, #1c1c1f 0%, transparent 60%), #131315; }
+    .wall::after { content:""; position:absolute; inset:0; opacity:0.16;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 
-    .intro { padding: 78px 60px 6px; }
-    .intro h1 {
-      font-size: clamp(40px,6.4vw,76px); font-weight:900; letter-spacing:0.03em;
-      color:#fff;
-      text-shadow: 0 2px 24px rgba(0,0,0,0.9), 0 0 40px rgba(120,150,255,0.25);
-    }
-    .intro .sub {
-      color:#c3c9d6; margin-top:14px;
-      font-size: clamp(15px,1.7vw,19px);
-      line-height: 1.9; letter-spacing: 0.02em;
-      text-shadow: 0 1px 12px rgba(0,0,0,0.85);
-    }
-    .home-link { position:fixed; left:24px; top:22px; z-index:60;
-      font-size:12px; letter-spacing:0.15em; color:rgba(255,255,255,0.6); }
+    .intro { padding: 78px 60px 4px; }
+    .intro h1 { font-size:clamp(40px,6.4vw,76px); font-weight:900; letter-spacing:0.03em; color:#fff;
+      text-shadow:0 2px 24px rgba(0,0,0,0.9), 0 0 40px rgba(120,150,255,0.25); }
+    .home-link { position:fixed; left:24px; top:22px; z-index:60; font-size:12px; letter-spacing:0.15em; color:rgba(255,255,255,0.6); }
     .home-link:hover { color:#fff; }
 
-    .archive-hint {
-      padding: 16px 60px 0; color: var(--text-dim); font-size:13px; letter-spacing:0.08em;
-      display:flex; gap:16px; align-items:center; flex-wrap:wrap;
-    }
-    .archive-hint kbd {
-      background: rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15);
-      border-radius:6px; padding:2px 8px; font-size:12px;
-    }
-
-    /* horizontal slider of posters */
-    .slider-wrap { position: relative; margin-top: 28px; }
-    .slider {
-      display: flex; gap: 46px;
-      padding: 30px 60px 60px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scrollbar-width: none;
-    }
+    .slider-wrap { position:relative; margin-top:20px; }
+    .slider { display:flex; gap:46px; padding:30px 60px 60px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; }
     .slider::-webkit-scrollbar { display:none; }
 
-    .poster {
-      flex: 0 0 clamp(300px, 34vw, 440px);
-      scroll-snap-align: center;
-      background: #d9d6cf;
-      color: #14140f;
-      border-radius: 4px;
-      padding: 26px 26px 30px;
-      transform: rotate(var(--tilt, -1deg));
-      box-shadow: 0 24px 50px rgba(0,0,0,0.6);
-      position: relative;
-      transition: transform 0.4s, box-shadow 0.4s;
-      font-family: "Courier New", monospace;
-    }
-    .poster:hover { transform: rotate(0deg) translateY(-6px) scale(1.01); box-shadow:0 34px 70px rgba(0,0,0,0.7); }
-    /* torn tape on top corners */
-    .poster::before {
-      content:""; position:absolute; top:-10px; left:50%; transform:translateX(-50%) rotate(-2deg);
-      width:110px; height:26px; background: rgba(180,175,160,0.55);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    }
-    .poster .ph { display:flex; justify-content:space-between; align-items:baseline;
-      border-bottom: 2px solid #14140f; padding-bottom:8px; }
-    .poster .ph .album-no { font-weight:800; letter-spacing:0.1em; font-size:13px; }
+    .poster { flex:0 0 clamp(300px,34vw,440px); scroll-snap-align:center; background:#d9d6cf; color:#14140f;
+      border-radius:4px; padding:26px 26px 30px; transform:rotate(var(--tilt,-1deg)); box-shadow:0 24px 50px rgba(0,0,0,0.6);
+      position:relative; transition:transform 0.4s, box-shadow 0.4s; font-family:"Courier New",monospace; }
+    .poster:hover { transform:rotate(0deg) translateY(-6px) scale(1.01); box-shadow:0 34px 70px rgba(0,0,0,0.7); }
+    .poster::before { content:""; position:absolute; top:-10px; left:50%; transform:translateX(-50%) rotate(-2deg);
+      width:110px; height:26px; background:rgba(180,175,160,0.55); box-shadow:0 2px 6px rgba(0,0,0,0.3); }
+    .poster .ph { display:flex; justify-content:space-between; align-items:baseline; border-bottom:2px solid #14140f; padding-bottom:8px; }
+    .poster .ph .album-no { font-weight:800; letter-spacing:0.06em; font-size:12px; }
     .poster .ph .album-tag { font-size:11px; letter-spacing:0.15em; }
-    .poster h2 {
-      font-family:"Pretendard","Noto Sans KR",sans-serif;
-      font-size: clamp(26px,3.4vw,40px); font-weight:900; margin:14px 0 4px;
-      text-transform:uppercase; letter-spacing:-0.01em;
-    }
-    .poster .release { font-size:12px; color:#3a3a30; margin-bottom:14px; }
+    .poster h2 { font-family:"Pretendard","Noto Sans KR",sans-serif; font-size:clamp(24px,3.2vw,38px); font-weight:900;
+      margin:14px 0 2px; text-transform:uppercase; letter-spacing:-0.01em; }
+    .poster .release { font-size:12px; color:#3a3a30; margin-bottom:12px; }
 
     .tracklist { list-style:none; }
-    .tracklist li {
-      display:flex; align-items:center; gap:10px;
-      padding:9px 8px; border-bottom:1px dashed rgba(20,20,15,0.35);
-      cursor:pointer; transition: background 0.15s, color 0.15s;
-      font-family:"Pretendard","Noto Sans KR",sans-serif;
-    }
-    .tracklist li:hover { background: rgba(20,20,15,0.08); }
-    .tracklist li .num { font-weight:800; font-size:12px; width:22px; color:#5a5a4a; }
-    .tracklist li .title { flex:1; font-weight:600; }
-    .tracklist li.is-title .title { text-decoration: underline; }
-    .tracklist li .play-ico {
-      width:24px; height:24px; border-radius:50%;
-      display:flex; align-items:center; justify-content:center;
-      border:1.5px solid #14140f; font-size:10px; flex-shrink:0;
-    }
-    .tracklist li.playing { background:#14140f; color:#d9d6cf; }
+    .tracklist li { display:flex; align-items:center; gap:10px; padding:7px 6px; border-bottom:1px dashed rgba(20,20,15,0.35);
+      font-family:"Pretendard","Noto Sans KR",sans-serif; }
+    .tracklist li .num { font-weight:800; font-size:12px; width:22px; color:#5a5a4a; flex-shrink:0; }
+    /* the song title IS a transparent (invisible) clickable hotspot */
+    .tracklist .play-hit { flex:1; text-align:left; background:transparent; border:0; padding:4px 2px; margin:0;
+      font:inherit; font-weight:600; color:#14140f; cursor:pointer; border-radius:4px; transition:background .15s; }
+    .tracklist .play-hit:hover { background:rgba(20,20,15,0.10); }
+    .tracklist .play-hit:focus-visible { outline:2px solid #14140f; }
+    .tracklist li.is-title .play-hit { text-decoration:underline; }
+    .tracklist .play-ico { width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+      border:1.5px solid #14140f; font-size:10px; flex-shrink:0; }
+    .tracklist li.playing { background:#14140f; }
     .tracklist li.playing .num { color:#b9b6a0; }
-    .tracklist li.playing .play-ico { border-color:#d9d6cf; }
+    .tracklist li.playing .play-hit { color:#d9d6cf; }
+    .tracklist li.playing .play-ico { border-color:#d9d6cf; color:#d9d6cf; }
+    .poster .footer-stamp { margin-top:16px; font-size:11px; letter-spacing:0.2em; color:#5a5a4a; display:flex; justify-content:space-between; }
 
-    .poster .footer-stamp {
-      margin-top:16px; font-size:11px; letter-spacing:0.2em; color:#5a5a4a;
-      display:flex; justify-content:space-between;
-    }
+    .nav-arrow { position:absolute; top:46%; transform:translateY(-50%); z-index:5; width:52px; height:52px; border-radius:50%;
+      cursor:pointer; background:rgba(20,24,33,0.8); border:1px solid rgba(255,255,255,0.15); color:#fff; font-size:20px;
+      display:flex; align-items:center; justify-content:center; backdrop-filter:blur(6px); }
+    .nav-arrow:hover { border-color:var(--accent); }
+    .nav-arrow.prev { left:20px; } .nav-arrow.next { right:20px; }
 
-    /* slider arrows */
-    .nav-arrow {
-      position:absolute; top:50%; transform:translateY(-50%); z-index:5;
-      width:52px; height:52px; border-radius:50%; cursor:pointer;
-      background: rgba(20,24,33,0.8); border:1px solid rgba(255,255,255,0.15);
-      color:#fff; font-size:20px; display:flex; align-items:center; justify-content:center;
-      backdrop-filter: blur(6px);
-    }
-    .nav-arrow:hover { border-color: var(--accent); }
-    .nav-arrow.prev { left: 20px; }
-    .nav-arrow.next { right: 20px; }
-
-    /* now-playing bar */
-    .now-playing {
-      position: fixed; left:50%; bottom:24px; transform: translate(-50%, 120%);
-      z-index: 90; display:flex; align-items:center; gap:16px;
-      background: rgba(15,15,17,0.92); border:1px solid rgba(255,255,255,0.12);
-      padding: 12px 18px; border-radius: 999px; backdrop-filter: blur(10px);
-      transition: transform 0.35s; min-width: 280px;
-    }
-    .now-playing.show { transform: translate(-50%, 0); }
+    .now-playing { position:fixed; left:50%; bottom:24px; transform:translate(-50%,120%); z-index:90; display:flex; align-items:center;
+      gap:16px; background:rgba(15,15,17,0.92); border:1px solid rgba(255,255,255,0.12); padding:12px 18px; border-radius:999px;
+      backdrop-filter:blur(10px); transition:transform 0.35s; min-width:280px; }
+    .now-playing.show { transform:translate(-50%,0); }
     .now-playing .eq { display:flex; align-items:flex-end; gap:3px; height:20px; }
-    .now-playing .eq span { width:3px; background:var(--accent); border-radius:2px;
-      animation: eq 0.8s ease-in-out infinite; }
-    .now-playing .eq span:nth-child(2){animation-delay:.2s}
-    .now-playing .eq span:nth-child(3){animation-delay:.4s}
-    .now-playing .eq span:nth-child(4){animation-delay:.1s}
+    .now-playing .eq span { width:3px; background:var(--accent); border-radius:2px; animation:eq 0.8s ease-in-out infinite; }
+    .now-playing .eq span:nth-child(2){animation-delay:.2s} .now-playing .eq span:nth-child(3){animation-delay:.4s} .now-playing .eq span:nth-child(4){animation-delay:.1s}
     @keyframes eq { 0%,100%{height:20%} 50%{height:100%} }
     .now-playing .np-text b { display:block; font-size:14px; }
-    .now-playing .np-text small { color: var(--text-dim); font-size:11px; letter-spacing:0.1em; }
+    .now-playing .np-text small { color:var(--text-dim); font-size:11px; letter-spacing:0.1em; }
     .now-playing .np-stop { margin-left:6px; cursor:pointer; color:var(--text-dim); }
     .now-playing .np-stop:hover { color:#fff; }
 
-    @media (max-width:720px){
-      .intro { padding:108px 22px 6px; }
-      .archive-hint { padding:14px 22px 0; }
-      .slider { padding: 24px 22px 50px; gap:30px; }
-      .nav-arrow { display:none; }
-    }
+    @media (max-width:720px){ .intro { padding:108px 22px 4px; } .slider { padding:24px 22px 50px; gap:30px; } .nav-arrow { display:none; } }
   </style>
 </head>
 <body>
   <div class="wall"></div>
-
   <a class="home-link" href="index.html">‹ HOME</a>
 
-  <section class="intro">
-    <h1>ARCHIVE</h1>
-    <p class="sub">스트릿 감성을 활용한 전곡 트랙 리스트</p>
-  </section>
-  <div class="archive-hint">
-    <span>시멘트 벽에 붙은 거리 포스터 — 곡명을 누르면 오디오가 재생됩니다.</span>
-    <span><kbd>←</kbd> <kbd>→</kbd> 로 포스터 전환</span>
-  </div>
+  <section class="intro"><h1>ARCHIVE</h1></section>
 
   <div class="slider-wrap">
     <button class="nav-arrow prev" aria-label="이전">‹</button>
     <button class="nav-arrow next" aria-label="다음">›</button>
-
     <div class="slider" id="slider">
-
       <article class="poster" style="--tilt:-2deg">
-        <div class="ph"><span class="album-no">[PHASE 1]</span><span class="album-tag">1ST MINI</span></div>
+        <div class="ph"><span class="album-no">[1ST MINI ALBUM]</span><span class="album-tag">2022</span></div>
         <h2>Hello, world!</h2>
-        <p class="release">2021.12.06 · TRACKLIST</p>
+        <p class="release">TITLE — “KNOCK DOWN” · TRACKLIST</p>
         <ul class="tracklist">
-          <li class="is-title" data-seed="1"><span class="num">01</span><span class="title">Knock Down</span><span class="play-ico">▶</span></li>
-          <li data-seed="2"><span class="num">02</span><span class="title">X-MAS</span><span class="play-ico">▶</span></li>
-          <li data-seed="3"><span class="num">03</span><span class="title">Crack</span><span class="play-ico">▶</span></li>
-          <li data-seed="4"><span class="num">04</span><span class="title">Don't Be Sad</span><span class="play-ico">▶</span></li>
+          <li><span class="num">01</span><button class="title play-hit" data-seed="1" aria-label="Test Me 재생">Test Me</button><span class="play-ico">▶</span></li>
+          <li class="is-title"><span class="num">02</span><button class="title play-hit" data-seed="2" aria-label="KNOCK DOWN 재생">KNOCK DOWN</button><span class="play-ico">▶</span></li>
+          <li><span class="num">03</span><button class="title play-hit" data-seed="3" aria-label="Sucker Punch! 재생">Sucker Punch!</button><span class="play-ico">▶</span></li>
+          <li><span class="num">04</span><button class="title play-hit" data-seed="4" aria-label="Strawberry Cake 재생">Strawberry Cake</button><span class="play-ico">▶</span></li>
+          <li><span class="num">05</span><button class="title play-hit" data-seed="5" aria-label="Pirates 재생">Pirates</button><span class="play-ico">▶</span></li>
+          <li><span class="num">06</span><button class="title play-hit" data-seed="6" aria-label="Test Me (Inst.) 재생">Test Me (Inst.)</button><span class="play-ico">▶</span></li>
         </ul>
         <div class="footer-stamp"><span>XDINARY HEROES</span><span>WE ARE NOT THE SAME</span></div>
       </article>
-
       <article class="poster" style="--tilt:1.5deg">
-        <div class="ph"><span class="album-no">[PHASE 2]</span><span class="album-tag">2ND MINI</span></div>
+        <div class="ph"><span class="album-no">[2ND MINI ALBUM]</span><span class="album-tag">2022</span></div>
         <h2>Overload</h2>
-        <p class="release">2022.07.20 · TRACKLIST</p>
+        <p class="release">TITLE — “Hair Cut” · TRACKLIST</p>
         <ul class="tracklist">
-          <li class="is-title" data-seed="5"><span class="num">01</span><span class="title">Hair Cut</span><span class="play-ico">▶</span></li>
-          <li data-seed="6"><span class="num">02</span><span class="title">Pin</span><span class="play-ico">▶</span></li>
-          <li data-seed="7"><span class="num">03</span><span class="title">Strawberry Cake</span><span class="play-ico">▶</span></li>
-          <li data-seed="8"><span class="num">04</span><span class="title">おかえり</span><span class="play-ico">▶</span></li>
+          <li><span class="num">01</span><button class="title play-hit" data-seed="7" aria-label="Zzz.. 재생">Zzz..</button><span class="play-ico">▶</span></li>
+          <li class="is-title"><span class="num">02</span><button class="title play-hit" data-seed="8" aria-label="Hair Cut 재생">Hair Cut</button><span class="play-ico">▶</span></li>
+          <li><span class="num">03</span><button class="title play-hit" data-seed="9" aria-label="LUNATIC 재생">LUNATIC</button><span class="play-ico">▶</span></li>
+          <li><span class="num">04</span><button class="title play-hit" data-seed="10" aria-label="Crack in the mirror 재생">Crack in the mirror</button><span class="play-ico">▶</span></li>
+          <li><span class="num">05</span><button class="title play-hit" data-seed="11" aria-label="Ghost 재생">Ghost</button><span class="play-ico">▶</span></li>
+          <li><span class="num">06</span><button class="title play-hit" data-seed="12" aria-label="X-MAS 재생">X-MAS</button><span class="play-ico">▶</span></li>
+          <li><span class="num">07</span><button class="title play-hit" data-seed="13" aria-label="Hair Cut (Inst.) 재생">Hair Cut (Inst.)</button><span class="play-ico">▶</span></li>
         </ul>
         <div class="footer-stamp"><span>XDINARY HEROES</span><span>YOU ARE NOT ALONE</span></div>
       </article>
-
       <article class="poster" style="--tilt:-1deg">
-        <div class="ph"><span class="album-no">[PHASE 3]</span><span class="album-tag">3RD MINI</span></div>
+        <div class="ph"><span class="album-no">[3RD MINI ALBUM]</span><span class="album-tag">2023</span></div>
         <h2>Deadlock</h2>
-        <p class="release">2023.10.18 · TRACKLIST</p>
+        <p class="release">TITLE — “Freakin&#x27; Bad” · TRACKLIST</p>
         <ul class="tracklist">
-          <li class="is-title" data-seed="9"><span class="num">01</span><span class="title">Break the Brake</span><span class="play-ico">▶</span></li>
-          <li data-seed="10"><span class="num">02</span><span class="title">Freedom</span><span class="play-ico">▶</span></li>
-          <li data-seed="11"><span class="num">03</span><span class="title">Sucker Punch</span><span class="play-ico">▶</span></li>
-          <li data-seed="12"><span class="num">04</span><span class="title">Devil</span><span class="play-ico">▶</span></li>
+          <li><span class="num">01</span><button class="title play-hit" data-seed="14" aria-label="Come into my head 재생">Come into my head</button><span class="play-ico">▶</span></li>
+          <li class="is-title"><span class="num">02</span><button class="title play-hit" data-seed="15" aria-label="Freakin&#x27; Bad 재생">Freakin&#x27; Bad</button><span class="play-ico">▶</span></li>
+          <li><span class="num">03</span><button class="title play-hit" data-seed="16" aria-label="Bicycle 재생">Bicycle</button><span class="play-ico">▶</span></li>
+          <li><span class="num">04</span><button class="title play-hit" data-seed="17" aria-label="Checkmate 재생">Checkmate</button><span class="play-ico">▶</span></li>
+          <li><span class="num">05</span><button class="title play-hit" data-seed="18" aria-label="Good Enough 재생">Good Enough</button><span class="play-ico">▶</span></li>
+          <li><span class="num">06</span><button class="title play-hit" data-seed="19" aria-label="Man in the Box 재생">Man in the Box</button><span class="play-ico">▶</span></li>
+          <li><span class="num">07</span><button class="title play-hit" data-seed="20" aria-label="Dear H. 재생">Dear H.</button><span class="play-ico">▶</span></li>
         </ul>
         <div class="footer-stamp"><span>XDINARY HEROES</span><span>BREAK THE BRAKE</span></div>
       </article>
-
       <article class="poster" style="--tilt:2deg">
-        <div class="ph"><span class="album-no">[PHASE 4]</span><span class="album-tag">8TH MINI</span></div>
-        <h2>DEAD AND</h2>
-        <p class="release">2025.02.24 · TRACKLIST</p>
+        <div class="ph"><span class="album-no">[4TH MINI ALBUM]</span><span class="album-tag">2023</span></div>
+        <h2>Livelock</h2>
+        <p class="release">TITLE — “Break the Brake” · TRACKLIST</p>
         <ul class="tracklist">
-          <li class="is-title" data-seed="13"><span class="num">01</span><span class="title">Helium Balloon</span><span class="play-ico">▶</span></li>
-          <li data-seed="14"><span class="num">02</span><span class="title">Voyager</span><span class="play-ico">▶</span></li>
-          <li data-seed="15"><span class="num">03</span><span class="title">Rise High Rise</span><span class="play-ico">▶</span></li>
-          <li data-seed="16"><span class="num">04</span><span class="title">Must Be Good</span><span class="play-ico">▶</span></li>
-          <li data-seed="17"><span class="num">05</span><span class="title">X-room</span><span class="play-ico">▶</span></li>
+          <li class="is-title"><span class="num">01</span><button class="title play-hit" data-seed="21" aria-label="Break the Brake 재생">Break the Brake</button><span class="play-ico">▶</span></li>
+          <li><span class="num">02</span><button class="title play-hit" data-seed="22" aria-label="Freddy 재생">Freddy</button><span class="play-ico">▶</span></li>
+          <li><span class="num">03</span><button class="title play-hit" data-seed="23" aria-label="PLUTO 재생">PLUTO</button><span class="play-ico">▶</span></li>
+          <li><span class="num">04</span><button class="title play-hit" data-seed="24" aria-label="Enemy 재생">Enemy</button><span class="play-ico">▶</span></li>
+          <li><span class="num">05</span><button class="title play-hit" data-seed="25" aria-label="Bad Chemical 재생">Bad Chemical</button><span class="play-ico">▶</span></li>
+          <li><span class="num">06</span><button class="title play-hit" data-seed="26" aria-label="Paranoid 재생">Paranoid</button><span class="play-ico">▶</span></li>
+          <li><span class="num">07</span><button class="title play-hit" data-seed="27" aria-label="AGAIN? AGAIN! 재생">AGAIN? AGAIN!</button><span class="play-ico">▶</span></li>
         </ul>
         <div class="footer-stamp"><span>XDINARY HEROES</span><span>WE ARE ALL HEROES</span></div>
       </article>
-
+      <article class="poster" style="--tilt:-1.5deg">
+        <div class="ph"><span class="album-no">[1ST FULL ALBUM]</span><span class="album-tag">2024</span></div>
+        <h2>Troubleshooting</h2>
+        <p class="release">TITLE — “Little Things” · TRACKLIST</p>
+        <ul class="tracklist">
+          <li><span class="num">01</span><button class="title play-hit" data-seed="28" aria-label="No Matter 재생">No Matter</button><span class="play-ico">▶</span></li>
+          <li class="is-title"><span class="num">02</span><button class="title play-hit" data-seed="29" aria-label="Little Things 재생">Little Things</button><span class="play-ico">▶</span></li>
+          <li><span class="num">03</span><button class="title play-hit" data-seed="30" aria-label="UNDEFINED 재생">UNDEFINED</button><span class="play-ico">▶</span></li>
+          <li><span class="num">04</span><button class="title play-hit" data-seed="31" aria-label="Paint It 재생">Paint It</button><span class="play-ico">▶</span></li>
+          <li><span class="num">05</span><button class="title play-hit" data-seed="32" aria-label="Money On My Mind 재생">Money On My Mind</button><span class="play-ico">▶</span></li>
+          <li><span class="num">06</span><button class="title play-hit" data-seed="33" aria-label="Dreaming Girl 재생">Dreaming Girl</button><span class="play-ico">▶</span></li>
+          <li><span class="num">07</span><button class="title play-hit" data-seed="34" aria-label="until the end of time 재생">until the end of time</button><span class="play-ico">▶</span></li>
+          <li><span class="num">08</span><button class="title play-hit" data-seed="35" aria-label="Walking to the Moon 재생">Walking to the Moon</button><span class="play-ico">▶</span></li>
+          <li><span class="num">09</span><button class="title play-hit" data-seed="36" aria-label="MONEYBALL 재생">MONEYBALL</button><span class="play-ico">▶</span></li>
+          <li><span class="num">10</span><button class="title play-hit" data-seed="37" aria-label="Night of Fireworks 재생">Night of Fireworks</button><span class="play-ico">▶</span></li>
+        </ul>
+        <div class="footer-stamp"><span>XDINARY HEROES</span><span>TROUBLESHOOTING</span></div>
+      </article>
+      <article class="poster" style="--tilt:1deg">
+        <div class="ph"><span class="album-no">[5TH MINI ALBUM]</span><span class="album-tag">2024</span></div>
+        <h2>LIVE and FALL</h2>
+        <p class="release">TITLE — “Night before the end” · TRACKLIST</p>
+        <ul class="tracklist">
+          <li><span class="num">01</span><button class="title play-hit" data-seed="38" aria-label="XH_WORLD_75 재생">XH_WORLD_75</button><span class="play-ico">▶</span></li>
+          <li class="is-title"><span class="num">02</span><button class="title play-hit" data-seed="39" aria-label="Night before the end 재생">Night before the end</button><span class="play-ico">▶</span></li>
+          <li><span class="num">03</span><button class="title play-hit" data-seed="40" aria-label="Save me 재생">Save me</button><span class="play-ico">▶</span></li>
+          <li><span class="num">04</span><button class="title play-hit" data-seed="41" aria-label="소년만화 재생">소년만화</button><span class="play-ico">▶</span></li>
+          <li><span class="num">05</span><button class="title play-hit" data-seed="42" aria-label="iNSTEAD! (feat. YB) 재생">iNSTEAD! (feat. YB)</button><span class="play-ico">▶</span></li>
+          <li><span class="num">06</span><button class="title play-hit" data-seed="43" aria-label="FEELING NICE 재생">FEELING NICE</button><span class="play-ico">▶</span></li>
+          <li><span class="num">07</span><button class="title play-hit" data-seed="44" aria-label="XYMPHONY 재생">XYMPHONY</button><span class="play-ico">▶</span></li>
+          <li><span class="num">08</span><button class="title play-hit" data-seed="45" aria-label="LOVE and FEAR 재생">LOVE and FEAR</button><span class="play-ico">▶</span></li>
+        </ul>
+        <div class="footer-stamp"><span>XDINARY HEROES</span><span>LIVE AND FALL</span></div>
+      </article>
+      <article class="poster" style="--tilt:-2deg">
+        <div class="ph"><span class="album-no">[6TH MINI ALBUM]</span><span class="album-tag">2025</span></div>
+        <h2>Beautiful Mind</h2>
+        <p class="release">TITLE — “Beautiful Life” · TRACKLIST</p>
+        <ul class="tracklist">
+          <li class="is-title"><span class="num">01</span><button class="title play-hit" data-seed="46" aria-label="Beautiful Life 재생">Beautiful Life</button><span class="play-ico">▶</span></li>
+          <li><span class="num">02</span><button class="title play-hit" data-seed="47" aria-label="FIGHT ME 재생">FIGHT ME</button><span class="play-ico">▶</span></li>
+          <li><span class="num">03</span><button class="title play-hit" data-seed="48" aria-label="more than i like 재생">more than i like</button><span class="play-ico">▶</span></li>
+          <li><span class="num">04</span><button class="title play-hit" data-seed="49" aria-label="Diamond 재생">Diamond</button><span class="play-ico">▶</span></li>
+          <li><span class="num">05</span><button class="title play-hit" data-seed="50" aria-label="Supernatural 재생">Supernatural</button><span class="play-ico">▶</span></li>
+          <li><span class="num">06</span><button class="title play-hit" data-seed="51" aria-label="George the Lobster 재생">George the Lobster</button><span class="play-ico">▶</span></li>
+          <li><span class="num">07</span><button class="title play-hit" data-seed="52" aria-label="BBB (Bitter But Better) 재생">BBB (Bitter But Better)</button><span class="play-ico">▶</span></li>
+        </ul>
+        <div class="footer-stamp"><span>XDINARY HEROES</span><span>BEAUTIFUL MIND</span></div>
+      </article>
+      <article class="poster" style="--tilt:1.2deg">
+        <div class="ph"><span class="album-no">[7TH MINI ALBUM]</span><span class="album-tag">2025</span></div>
+        <h2>LXVE to DEATH</h2>
+        <p class="release">TITLE — “ICU” · TRACKLIST</p>
+        <ul class="tracklist">
+          <li><span class="num">01</span><button class="title play-hit" data-seed="53" aria-label="Lost and Found 재생">Lost and Found</button><span class="play-ico">▶</span></li>
+          <li class="is-title"><span class="num">02</span><button class="title play-hit" data-seed="54" aria-label="ICU 재생">ICU</button><span class="play-ico">▶</span></li>
+          <li><span class="num">03</span><button class="title play-hit" data-seed="55" aria-label="Ashes to Ashes 재생">Ashes to Ashes</button><span class="play-ico">▶</span></li>
+          <li><span class="num">04</span><button class="title play-hit" data-seed="56" aria-label="Spoiler!!! 재생">Spoiler!!!</button><span class="play-ico">▶</span></li>
+          <li><span class="num">05</span><button class="title play-hit" data-seed="57" aria-label="Love Tug of War 재생">Love Tug of War</button><span class="play-ico">▶</span></li>
+          <li><span class="num">06</span><button class="title play-hit" data-seed="58" aria-label="LOVE ME 2 DEATH 재생">LOVE ME 2 DEATH</button><span class="play-ico">▶</span></li>
+          <li><span class="num">07</span><button class="title play-hit" data-seed="59" aria-label="FiRE (My Sweet Misery) 재생">FiRE (My Sweet Misery)</button><span class="play-ico">▶</span></li>
+        </ul>
+        <div class="footer-stamp"><span>XDINARY HEROES</span><span>LXVE TO DEATH</span></div>
+      </article>
+      <article class="poster" style="--tilt:-1deg">
+        <div class="ph"><span class="album-no">[8TH MINI ALBUM]</span><span class="album-tag">2026</span></div>
+        <h2>DEAD AND</h2>
+        <p class="release">TITLE — “Voyager” · TRACKLIST</p>
+        <ul class="tracklist">
+          <li><span class="num">01</span><button class="title play-hit" data-seed="60" aria-label="Helium Balloon 재생">Helium Balloon</button><span class="play-ico">▶</span></li>
+          <li class="is-title"><span class="num">02</span><button class="title play-hit" data-seed="61" aria-label="Voyager 재생">Voyager</button><span class="play-ico">▶</span></li>
+          <li><span class="num">03</span><button class="title play-hit" data-seed="62" aria-label="No Cool Kids Zone 재생">No Cool Kids Zone</button><span class="play-ico">▶</span></li>
+          <li><span class="num">04</span><button class="title play-hit" data-seed="63" aria-label="Hurt So Good 재생">Hurt So Good</button><span class="play-ico">▶</span></li>
+          <li><span class="num">05</span><button class="title play-hit" data-seed="64" aria-label="Rise High Rise 재생">Rise High Rise</button><span class="play-ico">▶</span></li>
+          <li><span class="num">06</span><button class="title play-hit" data-seed="65" aria-label="KTM 재생">KTM</button><span class="play-ico">▶</span></li>
+          <li><span class="num">07</span><button class="title play-hit" data-seed="66" aria-label="X room 재생">X room</button><span class="play-ico">▶</span></li>
+        </ul>
+        <div class="footer-stamp"><span>XDINARY HEROES</span><span>WE ARE ALL HEROES</span></div>
+      </article>
     </div>
   </div>
 

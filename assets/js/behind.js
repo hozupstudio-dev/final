@@ -1,56 +1,73 @@
-/* BEHIND THE SCENE — open the door, dolly through it into the interior,
- * then autoplay the inline behind clips. Clicking a clip opens the lightbox.
+/* BEHIND THE SCENE — knock to open the door, dolly through it into the
+ * interior, then show the behind-the-scenes YouTube clips (from
+ * window.MEDIA.behind). Real video titles are fetched in the browser via
+ * noembed (CORS-friendly); clicking a clip plays it in a lightbox.
  */
 (function () {
   const facade = document.getElementById('facade');
   const door = document.getElementById('doorPanel');
   const interior = document.getElementById('interior');
   const exitBtn = document.getElementById('exitBtn');
-  let entered = false;
+  const featured = document.getElementById('featured');
+  const grid = document.getElementById('grid');
+  let entered = false, built = false;
 
-  // resolve a clip's source through the central manifest (assets/js/media.js)
-  function srcFor(clip) {
-    const key = clip.dataset.key;
-    return (key && window.MEDIA && window.MEDIA.behind && window.MEDIA.behind[key])
-      || clip.dataset.video;
-  }
+  const clips = (window.MEDIA && window.MEDIA.behind) || [];
 
-  // lazy-load + softly autoplay the inline preview videos inside the room
-  function startPreviews() {
-    interior.querySelectorAll('.feature-clip, .mini-clip').forEach((clip) => {
-      const v = clip.querySelector('video');
-      if (!v) return;
-      if (!v.src) v.src = srcFor(clip);
-      v.muted = true;
-      const p = v.play();
-      if (p && p.catch) p.catch(() => {}); // poster stays if it can't play
+  function thumb(id) { return 'https://i.ytimg.com/vi/' + id + '/hqdefault.jpg'; }
+
+  // Build the clip cards. First clip is the large feature, the rest go in the grid.
+  function buildClips() {
+    if (built) return; built = true;
+    clips.forEach((c, i) => {
+      const isFeat = i === 0;
+      const el = document.createElement('div');
+      el.className = 'clip ' + (isFeat ? 'feature-clip' : 'mini-clip');
+      el.dataset.id = c.id;
+      el.dataset.title = c.label || ('Behind Clip ' + (i + 1));
+      el.innerHTML =
+        '<img class="thumb" src="' + thumb(c.id) + '" alt="" ' +
+          'onerror="this.src=\'https://i.ytimg.com/vi/' + c.id + '/mqdefault.jpg\'">' +
+        '<div class="grad"></div>' +
+        (isFeat ? '<span class="tag-tl">BEHIND</span>' : '') +
+        '<span class="play-circle">▶</span>' +
+        '<div class="cap"><b class="cap-title">' + el.dataset.title + '</b></div>';
+      el.addEventListener('click', () => openClip(c.id, el.dataset.title));
+      (isFeat ? featured : grid).appendChild(el);
+
+      // fetch the real YouTube title and update the label
+      fetchTitle(c.id).then((t) => {
+        if (!t) return;
+        el.dataset.title = t;
+        const cap = el.querySelector('.cap-title');
+        if (cap) cap.textContent = t;
+      });
     });
   }
-  function stopPreviews() {
-    interior.querySelectorAll('video').forEach((v) => v.pause());
+
+  function fetchTitle(id) {
+    const url = 'https://noembed.com/embed?url=https://www.youtube.com/watch?v=' + id;
+    return fetch(url).then((r) => r.json()).then((d) => d && d.title).catch(() => null);
   }
 
   function enter() {
     if (entered) return;
     entered = true;
-    facade.classList.add('open');                       // 1) swing door open
-    setTimeout(() => facade.classList.add('enter'), 700); // 2) dolly through
-    setTimeout(() => {                                    // 3) reveal interior
+    facade.classList.add('open');
+    setTimeout(() => facade.classList.add('enter'), 700);
+    setTimeout(() => {
       facade.style.display = 'none';
       interior.classList.add('show');
       exitBtn.style.display = 'inline-flex';
-      startPreviews();
+      buildClips();
       window.scrollTo({ top: 0 });
     }, 1850);
   }
 
   door.addEventListener('click', enter);
-  door.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); enter(); }
-  });
+  door.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); enter(); } });
 
   exitBtn.addEventListener('click', () => {
-    stopPreviews();
     interior.classList.remove('show');
     exitBtn.style.display = 'none';
     facade.style.display = 'flex';
@@ -58,33 +75,21 @@
     entered = false;
   });
 
-  // ---- lightbox clip player ----
+  // ---- lightbox (YouTube iframe) ----
   const lightbox = document.getElementById('lightbox');
-  const lbVideo = document.getElementById('lbVideo');
+  const lbFrame = document.getElementById('lbFrame');
   const lbTitle = document.getElementById('lbTitle');
   const lbClose = document.getElementById('lbClose');
 
-  function openClip(src, title) {
+  function openClip(id, title) {
     lbTitle.textContent = title || 'Behind Clip';
-    lbVideo.src = src;
-    lbVideoUnmuteSafe();
+    lbFrame.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + id +
+      '?autoplay=1&rel=0" title="' + (title || '') +
+      '" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
     lightbox.classList.add('show');
   }
-  function lbVideoUnmuteSafe() {
-    lbVideo.muted = false;
-    const p = lbVideo.play();
-    if (p && p.catch) p.catch(() => { lbVideo.muted = true; lbVideo.play().catch(() => {}); });
-  }
-  function closeClip() {
-    lbVideo.pause();
-    lbVideo.removeAttribute('src');
-    lbVideo.load();
-    lightbox.classList.remove('show');
-  }
+  function closeClip() { lbFrame.innerHTML = ''; lightbox.classList.remove('show'); }
 
-  document.querySelectorAll('.feature-clip, .mini-clip').forEach((clip) => {
-    clip.addEventListener('click', () => openClip(srcFor(clip), clip.dataset.title));
-  });
   lbClose.addEventListener('click', closeClip);
   lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeClip(); });
   window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeClip(); });

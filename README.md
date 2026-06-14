@@ -13,35 +13,34 @@ python3 -m http.server 8000
 
 | 파일 | 슬라이드 | 핵심 인터랙션 |
 |------|----------|----------------|
-| `index.html` | 랜딩 | 3개 페이지로 진입하는 허브 |
-| `discography.html` | DISCOGRAPHY | 스크롤 시 화면에 들어온 앨범의 **타이틀 후렴구 비디오·오디오가 자동 재생** (IntersectionObserver, 우측 하단 소리 토글) |
-| `archive.html` | ARCHIVE | 시멘트 벽 위 **거리 포스터 형식의 가로 슬라이드** 트랙 리스트. **곡명 클릭 시 오디오 재생** (← → / 휠 전환, Now Playing 바) |
-| `behind.html` | Behind The Scene | **건물 내부로 진입하는 도어 인터랙션**(문 열림 → 카메라 돌리 → 내부 진입) 후 비하인드 영상 갤러리 / 라이트박스 재생 |
+| `index.html` | 랜딩 | 3개 페이지로 진입하는 허브 + 에셋 관리 진입 |
+| `discography.html` | DISCOGRAPHY | 전체화면 배경 영상 9개(역대 앨범)를 스크롤로 전환. 중앙에 로고·발매연도·앨범 차수·앨범명. 하단 중앙 **모션 아이콘 = 음소거 토글 + 상태 표시** |
+| `archive.html` | ARCHIVE | 거리 포스터 형식 가로 슬라이드 트랙 리스트(9장 전곡). **곡 제목(투명 핫스팟) 클릭 시 재생** (← → / 휠 전환, Now Playing 바) |
+| `behind.html` | Behind The Scene | **문을 두드려(knock knock) 입장**하는 도어 인터랙션 → 내부에서 **유튜브 비하인드 영상**(임베드) 갤러리, 클릭 시 라이트박스 재생 |
+| `assets.html` | — | 로고·영상·유튜브 ID·트랙 오디오를 한 곳에서 교체하고 `media.js`를 생성하는 관리 페이지 |
 
-## 미디어 에셋 (연결 완료)
+## 중앙 미디어 설정 — `assets/js/media.js`
 
-영상·오디오·로고 파일이 `assets/media/`에 포함되어 바로 재생됩니다.
-> ⚠️ 저작권 문제로 실제 음원/뮤직비디오 대신 **동일 경로의 플레이스홀더 미디어**(절차적 생성)를 넣어 두었습니다.
-> 실제 파일로 같은 이름으로 교체만 하면 그대로 동작합니다.
+모든 로고/영상/오디오/유튜브 경로를 이 한 파일에서 관리합니다. `assets.html`에서 편집 후 생성한 코드를 덮어쓰면 전 페이지에 적용됩니다.
 
 ```
 assets/media/
-  troubleshooting.mp4  hairdye.mp4  breakthrough.mp4  deadand.mp4   # DISCOGRAPHY 전체화면 배경 영상(오디오 포함)
-  logos/hello.svg overload.svg deadlock.svg deadand.svg            # DISCOGRAPHY 중앙 앨범 로고
-  audio/1.mp3 … 17.mp3                                              # ARCHIVE 트랙별 오디오 (data-seed 기준)
-  behind/main.mp4 practice.mp4 mv.mp4 jacket.mp4 tour.mp4           # BEHIND 비하인드 영상
+  disco/<key>.mp4         # DISCOGRAPHY 9개 앨범 배경 영상(오디오 포함, 절차적 플레이스홀더)
+  logos/<key>.svg         # DISCOGRAPHY 중앙 엠블럼 로고(스왑용 플레이스홀더)
 ```
 
-- `discography.html`의 각 `.album[data-start]` 값은 후렴 시작 지점(초)이며, 영상이 로드되면 해당 지점부터 재생됩니다.
-- 우측 하단 **소리 켜기** 버튼으로 영상의 오디오를 함께 들을 수 있습니다(브라우저 자동재생 정책상 최초 1회 클릭 필요).
-- ARCHIVE는 포스터의 곡명을 클릭하면 해당 트랙 오디오가 재생됩니다.
+- **DISCOGRAPHY/로고/배경 영상**: 실제 파일을 같은 이름으로 `assets/media/`에 넣거나, `media.js`/관리 페이지에서 경로·URL로 교체.
+- **ARCHIVE 오디오**: 기본은 트랙별 **데모 합성음**(파일 불필요). 실제 음원은 `media.js`의 `archive`에 `"<seed>": "URL"`로 추가.
+- **BEHIND 영상**: `media.js`의 `behind`에 **유튜브 영상 ID** 목록. 임베드로 재생되며 제목은 브라우저에서 자동 표시.
+
+> 디스코그래피/트랙리스트 데이터는 공개 자료(위키피디아 등)를 참고했습니다. 앨범 커버/트랙리스트 이미지 등은 저작권 및 작업 환경의 외부 다운로드 제한으로 포함하지 않았으며, 위 관리 페이지로 직접 추가할 수 있습니다.
 
 ## 구조
 
 ```
-index.html
-discography.html / archive.html / behind.html
+index.html  discography.html  archive.html  behind.html  assets.html
 assets/
   css/common.css
-  js/discography.js  archive.js  behind.js
+  js/media.js  discography.js  archive.js  behind.js
+  media/disco/*.mp4  media/logos/*.svg
 ```
