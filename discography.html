@@ -6,191 +6,154 @@
   <title>DISCOGRAPHY — Xdinary Heroes</title>
   <link rel="stylesheet" href="assets/css/common.css" />
   <style>
-    .intro { padding: 130px 60px 40px; max-width: 900px; }
-    .intro h1 { font-size: clamp(40px, 6vw, 72px); font-weight: 800; }
-    .intro .sub { color: var(--text-dim); margin-top: 10px; font-size: clamp(15px,1.7vw,20px); }
-    .intro .desc {
-      margin-top: 26px; max-width: 560px; color: var(--text-dim);
-      background: var(--card); padding: 20px 24px; border-radius: var(--radius);
-      border:1px solid rgba(255,255,255,0.05);
-    }
-    .scroll-hint {
-      display:flex; align-items:center; gap:10px; margin-top:24px;
-      color: var(--text-dim); font-size:13px; letter-spacing:0.1em;
-    }
-    .scroll-hint .dot { width:6px;height:6px;border-radius:50%;background:var(--accent);
-      animation: pulse 1.4s infinite; }
-    @keyframes pulse { 0%,100%{opacity:0.3;} 50%{opacity:1;} }
+    html, body { height: 100%; }
+    body { background:#05060a; overflow:hidden; }
 
-    /* album scroll sections */
+    /* vertical scroll-snap deck: one full-screen video per album */
+    .deck {
+      height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      scrollbar-width: none;
+    }
+    .deck::-webkit-scrollbar { display:none; }
+
     .album {
       position: relative;
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 40px;
+      height: 100vh;
+      scroll-snap-align: start;
+      display: flex;
       align-items: center;
-      padding: 80px 60px;
-    }
-    .album .stage {
-      position: relative;
-      aspect-ratio: 16/9;
-      border-radius: var(--radius);
+      justify-content: center;
       overflow: hidden;
-      background: #05070d;
-      border: 1px solid rgba(255,255,255,0.07);
-      box-shadow: 0 30px 70px rgba(0,0,0,0.6);
     }
-    .album .stage video,
-    .album .stage .poster {
-      position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+    .album video {
+      position:absolute; inset:0; width:100%; height:100%;
+      object-fit: cover; z-index:0;
     }
-    .album .stage .poster {
-      display:flex; align-items:center; justify-content:center;
-      font-size:clamp(60px,10vw,140px); font-weight:900;
+    /* fallback tint shown until/if the video paints */
+    .album .bg-fallback {
+      position:absolute; inset:0; z-index:0;
       background: var(--cover, linear-gradient(135deg,#1a2238,#0c1020));
-      color: rgba(255,255,255,0.85);
-      text-shadow: 0 0 50px var(--accent-glow);
-      transition: opacity 0.6s;
     }
-    .album.playing .poster { opacity: 0; }
-
-    .album .stage .badge {
-      position:absolute; left:16px; top:16px; z-index:3;
-      display:flex; align-items:center; gap:8px;
-      font-size:12px; letter-spacing:0.12em; text-transform:uppercase;
-      background: rgba(0,0,0,0.45); padding:7px 12px; border-radius:999px;
-      backdrop-filter: blur(4px);
-    }
-    .album .stage .badge .live { width:8px;height:8px;border-radius:50%;
-      background:#ff4d6a; box-shadow:0 0 10px #ff4d6a; }
-    .album.playing .badge .live { animation: pulse 1s infinite; }
-
-    .audio-wave { display:flex; align-items:flex-end; gap:3px; height:14px; }
-    .audio-wave span {
-      width:3px; background:var(--accent); border-radius:2px; height:30%;
-    }
-    .album.playing .audio-wave span { animation: wave 0.9s ease-in-out infinite; }
-    .audio-wave span:nth-child(2){animation-delay:.15s}
-    .audio-wave span:nth-child(3){animation-delay:.3s}
-    .audio-wave span:nth-child(4){animation-delay:.45s}
-    @keyframes wave { 0%,100%{height:30%} 50%{height:100%} }
-
-    .album .meta { opacity: 0; transform: translateY(30px); transition: all 0.7s; }
-    .album.in-view .meta { opacity: 1; transform: none; }
-    .album .meta .era { color: var(--accent); letter-spacing:0.2em; font-size:13px; text-transform:uppercase; }
-    .album .meta h2 { font-size: clamp(30px,4vw,54px); font-weight:800; margin:8px 0 4px; }
-    .album .meta .hook { color: var(--text-dim); font-style: italic; margin-bottom: 16px; }
-    .album .meta .tracks { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
-    .album .meta .tracks span {
-      font-size:12px; padding:6px 12px; border-radius:999px;
-      background: var(--card); border:1px solid rgba(255,255,255,0.06); color:var(--text-dim);
+    .album .scrim {
+      position:absolute; inset:0; z-index:1;
+      background: radial-gradient(60% 60% at 50% 50%, rgba(0,0,0,0.15), rgba(0,0,0,0.55));
     }
 
-    /* sound toggle floating */
+    /* centered album logo */
+    .album .logo {
+      position: relative; z-index:2;
+      width: min(560px, 78vw);
+      opacity: 0; transform: translateY(24px) scale(0.98);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+      filter: drop-shadow(0 0 26px rgba(120,150,255,0.45));
+      pointer-events:none;
+    }
+    .album.in-view .logo { opacity:1; transform:none; }
+
+    /* now-playing chip per album */
+    .album .live-chip {
+      position:absolute; left:50%; bottom:64px; transform:translateX(-50%);
+      z-index:2; display:flex; align-items:center; gap:10px;
+      font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:#cfd6e6;
+      background:rgba(0,0,0,0.35); padding:8px 16px; border-radius:999px;
+      backdrop-filter: blur(5px); opacity:0; transition:opacity .6s;
+    }
+    .album.in-view .live-chip { opacity:1; }
+    .live-chip .live { width:8px;height:8px;border-radius:50%;background:#ff4d6a;box-shadow:0 0 10px #ff4d6a; }
+    .album.playing .live-chip .live { animation: blink 1s infinite; }
+    @keyframes blink { 0%,100%{opacity:.3} 50%{opacity:1} }
+    .live-chip .wave { display:flex; align-items:flex-end; gap:3px; height:12px; }
+    .live-chip .wave span { width:3px; height:30%; background:var(--accent); border-radius:2px; }
+    .album.playing .live-chip .wave span { animation: wv .9s ease-in-out infinite; }
+    .live-chip .wave span:nth-child(2){animation-delay:.15s}
+    .live-chip .wave span:nth-child(3){animation-delay:.3s}
+    @keyframes wv { 0%,100%{height:30%} 50%{height:100%} }
+
+    /* page-side progress dots */
+    .dots {
+      position: fixed; right: 26px; top:50%; transform:translateY(-50%);
+      z-index: 50; display:flex; flex-direction:column; gap:14px;
+    }
+    .dots button {
+      width:10px; height:10px; border-radius:50%; border:1px solid rgba(255,255,255,0.5);
+      background:transparent; cursor:pointer; padding:0; transition:all .25s;
+    }
+    .dots button.active { background:#fff; box-shadow:0 0 12px rgba(255,255,255,0.7); transform:scale(1.2); }
+
+    /* scroll hint (first screen only) */
+    .scroll-cue {
+      position: fixed; left:50%; bottom:26px; transform:translateX(-50%);
+      z-index:50; color:rgba(255,255,255,0.7); font-size:12px; letter-spacing:0.2em;
+      text-transform:uppercase; display:flex; flex-direction:column; align-items:center; gap:6px;
+      transition: opacity .4s;
+    }
+    .scroll-cue .arrow { animation: bob 1.6s ease-in-out infinite; }
+    @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
+
+    /* sound toggle */
     .sound-toggle {
-      position: fixed; right: 28px; bottom: 28px; z-index: 80;
-      display:flex; align-items:center; gap:10px;
-      padding: 12px 18px; border-radius:999px;
-      background: rgba(20,24,33,0.85); border:1px solid rgba(255,255,255,0.12);
-      cursor:pointer; backdrop-filter: blur(8px); font-size:13px; letter-spacing:0.05em;
+      position: fixed; right: 26px; bottom: 26px; z-index: 60;
+      display:flex; align-items:center; gap:10px; padding:12px 18px; border-radius:999px;
+      background: rgba(15,18,26,0.8); border:1px solid rgba(255,255,255,0.14);
+      cursor:pointer; backdrop-filter: blur(8px); font-size:13px;
     }
     .sound-toggle:hover { border-color: var(--accent); }
 
-    @media (max-width: 860px){
-      .album { grid-template-columns: 1fr; padding: 60px 22px; min-height: auto; gap:24px; }
-      .intro { padding: 110px 22px 20px; }
+    .home-link {
+      position: fixed; left:24px; top:22px; z-index:60;
+      font-size:12px; letter-spacing:0.15em; color:rgba(255,255,255,0.6);
     }
+    .home-link:hover { color:#fff; }
   </style>
 </head>
 <body>
-  <div class="starfield"></div>
+  <a class="home-link" href="index.html">‹ HOME</a>
 
-  <nav class="site-nav">
-    <div class="brand"><a href="index.html">XDINARY<b>HEROES</b></a></div>
-    <ul>
-      <li><a href="discography.html" class="active">Discography</a></li>
-      <li><a href="archive.html">Archive</a></li>
-      <li><a href="behind.html">Behind</a></li>
-    </ul>
-  </nav>
-
-  <section class="intro">
-    <h1>DISCOGRAPHY</h1>
-    <p class="sub">시청각적 동기화를 통한 음악적 히스토리</p>
-    <div class="desc">
-      사용자가 스크롤을 하면 역대 앨범의 타이틀 후렴구 부분의 비디오와 오디오가
-      자동으로 재생되며, 아티스트의 정체성을 다감각적으로 경험할 수 있도록 한다.
-    </div>
-    <div class="scroll-hint"><span class="dot"></span> SCROLL TO SYNC — 스크롤하면 후렴구가 재생됩니다</div>
-  </section>
-
-  <main id="discography">
-    <!-- Each .album auto-plays its title chorus video+audio when scrolled into view -->
-    <section class="album" data-start="42" style="--cover:linear-gradient(135deg,#241a3a,#0c1020)">
-      <div class="stage">
-        <span class="badge"><span class="live"></span> Title Chorus
-          <span class="audio-wave"><span></span><span></span><span></span><span></span></span></span>
-        <div class="poster">X</div>
-        <video muted loop playsinline preload="none"
-               data-src="assets/media/troubleshooting.mp4"></video>
-      </div>
-      <div class="meta">
-        <div class="era">2021 · 1st Mini Album</div>
-        <h2>Hello, world!</h2>
-        <p class="hook">“Knock Down” — 후렴 hook 구간 자동 재생</p>
-        <div class="tracks"><span>Knock Down</span><span>X-MAS</span><span>Crack</span></div>
-      </div>
+  <div class="deck" id="deck">
+    <section class="album in-view" data-start="42" data-dot="0" style="--cover:linear-gradient(135deg,#241a3a,#0c1020)">
+      <div class="bg-fallback"></div>
+      <video muted loop playsinline preload="auto" data-src="assets/media/troubleshooting.mp4"></video>
+      <div class="scrim"></div>
+      <img class="logo" src="assets/media/logos/hello.svg" alt="Hello, world!" />
+      <div class="live-chip"><span class="live"></span> Title Chorus
+        <span class="wave"><span></span><span></span><span></span></span></div>
     </section>
 
-    <section class="album" data-start="50" style="--cover:linear-gradient(135deg,#3a1a24,#0c1020)">
-      <div class="stage">
-        <span class="badge"><span class="live"></span> Title Chorus
-          <span class="audio-wave"><span></span><span></span><span></span><span></span></span></span>
-        <div class="poster">II</div>
-        <video muted loop playsinline preload="none"
-               data-src="assets/media/hairdye.mp4"></video>
-      </div>
-      <div class="meta">
-        <div class="era">2022 · 2nd Mini Album</div>
-        <h2>Overload</h2>
-        <p class="hook">“Hair Cut” — 후렴 hook 구간 자동 재생</p>
-        <div class="tracks"><span>Hair Cut</span><span>Pin</span><span>Strawberry Cake</span></div>
-      </div>
+    <section class="album" data-start="50" data-dot="1" style="--cover:linear-gradient(135deg,#3a1a24,#0c1020)">
+      <div class="bg-fallback"></div>
+      <video muted loop playsinline preload="auto" data-src="assets/media/hairdye.mp4"></video>
+      <div class="scrim"></div>
+      <img class="logo" src="assets/media/logos/overload.svg" alt="Overload" />
+      <div class="live-chip"><span class="live"></span> Title Chorus
+        <span class="wave"><span></span><span></span><span></span></span></div>
     </section>
 
-    <section class="album" data-start="38" style="--cover:linear-gradient(135deg,#1a2e3a,#0c1020)">
-      <div class="stage">
-        <span class="badge"><span class="live"></span> Title Chorus
-          <span class="audio-wave"><span></span><span></span><span></span><span></span></span></span>
-        <div class="poster">III</div>
-        <video muted loop playsinline preload="none"
-               data-src="assets/media/breakthrough.mp4"></video>
-      </div>
-      <div class="meta">
-        <div class="era">2023 · 3rd Mini Album</div>
-        <h2>Deadlock</h2>
-        <p class="hook">“Break the Brake” — 후렴 hook 구간 자동 재생</p>
-        <div class="tracks"><span>Break the Brake</span><span>Fre{korea}m</span><span>Devil</span></div>
-      </div>
+    <section class="album" data-start="38" data-dot="2" style="--cover:linear-gradient(135deg,#1a2e3a,#0c1020)">
+      <div class="bg-fallback"></div>
+      <video muted loop playsinline preload="auto" data-src="assets/media/breakthrough.mp4"></video>
+      <div class="scrim"></div>
+      <img class="logo" src="assets/media/logos/deadlock.svg" alt="Deadlock" />
+      <div class="live-chip"><span class="live"></span> Title Chorus
+        <span class="wave"><span></span><span></span><span></span></span></div>
     </section>
 
-    <section class="album" data-start="46" style="--cover:linear-gradient(135deg,#2a2333,#0c1020)">
-      <div class="stage">
-        <span class="badge"><span class="live"></span> Title Chorus
-          <span class="audio-wave"><span></span><span></span><span></span><span></span></span></span>
-        <div class="poster">IV</div>
-        <video muted loop playsinline preload="none"
-               data-src="assets/media/deadand.mp4"></video>
-      </div>
-      <div class="meta">
-        <div class="era">2025 · 8th Mini Album</div>
-        <h2>DEAD AND</h2>
-        <p class="hook">“Helium Balloon” — 후렴 hook 구간 자동 재생</p>
-        <div class="tracks"><span>Helium Balloon</span><span>Voyager</span><span>Rise High Rise</span></div>
-      </div>
+    <section class="album" data-start="46" data-dot="3" style="--cover:linear-gradient(135deg,#2a2333,#0c1020)">
+      <div class="bg-fallback"></div>
+      <video muted loop playsinline preload="auto" data-src="assets/media/deadand.mp4"></video>
+      <div class="scrim"></div>
+      <img class="logo" src="assets/media/logos/deadand.svg" alt="DEAD AND" />
+      <div class="live-chip"><span class="live"></span> Title Chorus
+        <span class="wave"><span></span><span></span><span></span></span></div>
     </section>
-  </main>
+  </div>
+
+  <div class="dots" id="dots"></div>
+
+  <div class="scroll-cue" id="scrollCue">
+    <span>Scroll</span><span class="arrow">▾</span>
+  </div>
 
   <button class="sound-toggle" id="soundToggle">
     <span id="soundIcon">🔇</span> <span id="soundLabel">소리 켜기</span>

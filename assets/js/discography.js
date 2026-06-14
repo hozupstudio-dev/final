@@ -1,65 +1,76 @@
-/* DISCOGRAPHY — scroll-synced title chorus auto-play
- * As each album enters the viewport, its title-chorus video plays and
- * (when the user has enabled sound) jumps to the hook timestamp.
+/* DISCOGRAPHY — full-screen video deck.
+ * Each album fills the viewport; scrolling snaps to the next one and its
+ * title-chorus video (with audio) auto-plays from the hook timestamp.
  */
 (function () {
-  const albums = Array.from(document.querySelectorAll('.album'));
+  const deck = document.getElementById('deck');
+  const albums = Array.from(deck.querySelectorAll('.album'));
+  const dotsWrap = document.getElementById('dots');
+  const cue = document.getElementById('scrollCue');
   let soundOn = false;
   let active = null;
 
-  // Lazy-attach video sources only when needed (perf)
-  function ensureSrc(video) {
-    if (!video.src && video.dataset.src) video.src = video.dataset.src;
-  }
+  // build progress dots
+  albums.forEach((a, i) => {
+    const b = document.createElement('button');
+    b.setAttribute('aria-label', '앨범 ' + (i + 1));
+    if (i === 0) b.classList.add('active');
+    b.addEventListener('click', () =>
+      a.scrollIntoView({ behavior: 'smooth' }));
+    dotsWrap.appendChild(b);
+  });
+  const dots = Array.from(dotsWrap.children);
 
-  function playAlbum(album) {
+  function ensureSrc(v) { if (!v.src && v.dataset.src) v.src = v.dataset.src; }
+
+  function play(album) {
+    if (active === album) return;
+    if (active) stop(active);
+
     const video = album.querySelector('video');
     ensureSrc(video);
     const start = parseFloat(album.dataset.start || '0');
 
-    // jump to the chorus hook moment, then play
     const begin = () => {
-      try { if (video.currentTime < start) video.currentTime = start; } catch (e) {}
+      try { if (start && video.currentTime < start) video.currentTime = start; } catch (e) {}
       video.muted = !soundOn;
       const p = video.play();
-      if (p && p.catch) p.catch(() => {}); // ignore autoplay rejection
+      if (p && p.catch) p.catch(() => {});
     };
-
     if (video.readyState >= 1) begin();
     else video.addEventListener('loadedmetadata', begin, { once: true });
 
-    album.classList.add('playing');
+    album.classList.add('playing', 'in-view');
     active = album;
+
+    // sync dots
+    const idx = parseInt(album.dataset.dot, 10);
+    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
   }
 
-  function stopAlbum(album) {
-    const video = album.querySelector('video');
-    video.pause();
+  function stop(album) {
+    album.querySelector('video').pause();
     album.classList.remove('playing');
-    if (active === album) active = null;
   }
 
-  // in-view reveal + dominant-section playback
+  // observe which album fills the screen
   const io = new IntersectionObserver((entries) => {
     entries.forEach((e) => {
-      e.target.classList.toggle('in-view', e.isIntersecting);
+      if (e.isIntersecting && e.intersectionRatio >= 0.6) {
+        e.target.classList.add('in-view');
+        play(e.target);
+      }
     });
-    // pick the most-visible album as the one that plays
-    let best = null, bestRatio = 0;
-    albums.forEach((a) => {
-      const r = a.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const visible = Math.max(0, Math.min(r.bottom, vh) - Math.max(r.top, 0));
-      const ratio = visible / vh;
-      if (ratio > bestRatio) { bestRatio = ratio; best = a; }
-    });
-    if (best && bestRatio > 0.45 && best !== active) {
-      if (active) stopAlbum(active);
-      playAlbum(best);
-    }
-  }, { threshold: [0, 0.25, 0.45, 0.6, 0.8] });
-
+  }, { threshold: [0, 0.6, 0.9] });
   albums.forEach((a) => io.observe(a));
+
+  // hide the scroll cue once the user leaves the first screen
+  deck.addEventListener('scroll', () => {
+    cue.style.opacity = deck.scrollTop > 60 ? '0' : '1';
+  }, { passive: true });
+
+  // kick off the first video
+  play(albums[0]);
 
   // sound toggle
   const toggle = document.getElementById('soundToggle');
@@ -76,11 +87,10 @@
     }
   });
 
-  // pause everything when tab is hidden
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden && active) active.querySelector('video').pause();
-    else if (!document.hidden && active) {
-      const p = active.querySelector('video').play(); if (p && p.catch) p.catch(() => {});
-    }
+    if (!active) return;
+    const v = active.querySelector('video');
+    if (document.hidden) v.pause();
+    else { const p = v.play(); if (p && p.catch) p.catch(() => {}); }
   });
 })();

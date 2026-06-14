@@ -18,20 +18,23 @@ python3 -m http.server 8000
 | `archive.html` | ARCHIVE | 시멘트 벽 위 **거리 포스터 형식의 가로 슬라이드** 트랙 리스트. **곡명 클릭 시 오디오 재생** (← → / 휠 전환, Now Playing 바) |
 | `behind.html` | Behind The Scene | **건물 내부로 진입하는 도어 인터랙션**(문 열림 → 카메라 돌리 → 내부 진입) 후 비하인드 영상 갤러리 / 라이트박스 재생 |
 
-## 미디어 에셋 (선택)
+## 미디어 에셋 (연결 완료)
 
-실제 영상·오디오 파일을 아래 경로에 넣으면 자동으로 사용됩니다.
-**파일이 없으면** 각 페이지가 우아하게 대체 동작합니다
-(DISCOGRAPHY·BEHIND는 포스터/플레이 버튼 표시, ARCHIVE는 합성 사운드로 재생을 시연).
+영상·오디오·로고 파일이 `assets/media/`에 포함되어 바로 재생됩니다.
+> ⚠️ 저작권 문제로 실제 음원/뮤직비디오 대신 **동일 경로의 플레이스홀더 미디어**(절차적 생성)를 넣어 두었습니다.
+> 실제 파일로 같은 이름으로 교체만 하면 그대로 동작합니다.
 
 ```
 assets/media/
-  troubleshooting.mp4  hairdye.mp4  breakthrough.mp4  deadand.mp4   # DISCOGRAPHY 타이틀 후렴 클립
+  troubleshooting.mp4  hairdye.mp4  breakthrough.mp4  deadand.mp4   # DISCOGRAPHY 전체화면 배경 영상(오디오 포함)
+  logos/hello.svg overload.svg deadlock.svg deadand.svg            # DISCOGRAPHY 중앙 앨범 로고
   audio/1.mp3 … 17.mp3                                              # ARCHIVE 트랙별 오디오 (data-seed 기준)
   behind/main.mp4 practice.mp4 mv.mp4 jacket.mp4 tour.mp4           # BEHIND 비하인드 영상
 ```
 
-`discography.html`의 각 `.album[data-start]` 값은 후렴 시작 지점(초)이며, 영상이 로드되면 해당 지점부터 재생됩니다.
+- `discography.html`의 각 `.album[data-start]` 값은 후렴 시작 지점(초)이며, 영상이 로드되면 해당 지점부터 재생됩니다.
+- 우측 하단 **소리 켜기** 버튼으로 영상의 오디오를 함께 들을 수 있습니다(브라우저 자동재생 정책상 최초 1회 클릭 필요).
+- ARCHIVE는 포스터의 곡명을 클릭하면 해당 트랙 오디오가 재생됩니다.
 
 ## 구조
 

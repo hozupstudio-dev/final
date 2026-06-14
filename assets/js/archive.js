@@ -95,18 +95,50 @@
 
   npStop.addEventListener('click', stopAll);
 
-  // horizontal navigation
+  // horizontal navigation — index-based so scroll-snap lands exactly on a poster
   const posters = Array.from(slider.querySelectorAll('.poster'));
-  function step(dir) {
-    const w = posters[0].getBoundingClientRect().width + 46;
-    slider.scrollBy({ left: dir * w, behavior: 'smooth' });
+  let idx = 0;
+
+  function currentIndex() {
+    // poster whose center is closest to the slider's viewport center
+    const mid = slider.scrollLeft + slider.clientWidth / 2;
+    let best = 0, bestDist = Infinity;
+    posters.forEach((p, i) => {
+      const c = p.offsetLeft + p.offsetWidth / 2;
+      const d = Math.abs(c - mid);
+      if (d < bestDist) { bestDist = d; best = i; }
+    });
+    return best;
   }
-  document.querySelector('.nav-arrow.prev').addEventListener('click', () => step(-1));
-  document.querySelector('.nav-arrow.next').addEventListener('click', () => step(1));
+
+  function goTo(i) {
+    idx = Math.max(0, Math.min(posters.length - 1, i));
+    const p = posters[idx];
+    const target = p.offsetLeft + p.offsetWidth / 2 - slider.clientWidth / 2;
+    slider.scrollTo({ left: target, behavior: 'smooth' });
+    updateArrows();
+  }
+  function step(dir) { goTo(currentIndex() + dir); }
+
+  const prevBtn = document.querySelector('.nav-arrow.prev');
+  const nextBtn = document.querySelector('.nav-arrow.next');
+  function updateArrows() {
+    const i = currentIndex();
+    prevBtn.style.opacity = i <= 0 ? '0.35' : '1';
+    nextBtn.style.opacity = i >= posters.length - 1 ? '0.35' : '1';
+  }
+
+  prevBtn.addEventListener('click', () => step(-1));
+  nextBtn.addEventListener('click', () => step(1));
   window.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') step(-1);
     if (e.key === 'ArrowRight') step(1);
   });
+  slider.addEventListener('scroll', () => {
+    clearTimeout(slider._t);
+    slider._t = setTimeout(updateArrows, 120);
+  }, { passive: true });
+  updateArrows();
 
   // let the page scroll wheel drive horizontal movement over the slider
   slider.addEventListener('wheel', (e) => {

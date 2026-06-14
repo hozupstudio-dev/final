@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 380" width="640" height="380" fill="none">
+  <g fill="#ffffff" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif">
+    <!-- X emblem -->
+    <g transform="translate(320 78)">
+      <path d="M-34 -34 L34 34 M34 -34 L-34 34" stroke="#ffffff" stroke-width="9" stroke-linecap="round"/>
+      <text y="6" font-size="20" font-weight="700" font-family="Georgia, serif" fill="#cdd6ff" opacity="0.0">I</text><circle r="54" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.35"/>
+    </g>
+    <text x="320" y="150" font-size="17" letter-spacing="7" fill="#cdd6ff" font-family="Helvetica, Arial, sans-serif">2021 · 1ST MINI ALBUM</text>
+    <text x="320" y="232" font-size="46" font-weight="700" letter-spacing="1">Hello, world!</text>
+    <text x="320" y="232" font-size="0" opacity="0">.</text>
+    <text x="320" y="290" font-size="14" letter-spacing="9" fill="#9aa3b2" font-family="Helvetica, Arial, sans-serif">XDINARY HEROES</text>
+    <g transform="translate(320 330)" fill="#cdd6ff" font-family="Helvetica, Arial, sans-serif">
+      <text x="0" y="0" font-size="13" letter-spacing="3" opacity="0.85">TITLE — “Knock Down”</text>
+    </g>
+  </g>
+</svg>

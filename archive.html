@@ -20,9 +20,21 @@
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
 
-    .intro { padding: 120px 60px 10px; }
-    .intro h1 { font-size: clamp(38px,6vw,68px); font-weight:800; }
-    .intro .sub { color: var(--text-dim); margin-top:8px; }
+    .intro { padding: 78px 60px 6px; }
+    .intro h1 {
+      font-size: clamp(40px,6.4vw,76px); font-weight:900; letter-spacing:0.03em;
+      color:#fff;
+      text-shadow: 0 2px 24px rgba(0,0,0,0.9), 0 0 40px rgba(120,150,255,0.25);
+    }
+    .intro .sub {
+      color:#c3c9d6; margin-top:14px;
+      font-size: clamp(15px,1.7vw,19px);
+      line-height: 1.9; letter-spacing: 0.02em;
+      text-shadow: 0 1px 12px rgba(0,0,0,0.85);
+    }
+    .home-link { position:fixed; left:24px; top:22px; z-index:60;
+      font-size:12px; letter-spacing:0.15em; color:rgba(255,255,255,0.6); }
+    .home-link:hover { color:#fff; }
 
     .archive-hint {
       padding: 16px 60px 0; color: var(--text-dim); font-size:13px; letter-spacing:0.08em;
@@ -144,14 +156,7 @@
 <body>
   <div class="wall"></div>
 
-  <nav class="site-nav">
-    <div class="brand"><a href="index.html">XDINARY<b>HEROES</b></a></div>
-    <ul>
-      <li><a href="discography.html">Discography</a></li>
-      <li><a href="archive.html" class="active">Archive</a></li>
-      <li><a href="behind.html">Behind</a></li>
-    </ul>
-  </nav>
+  <a class="home-link" href="index.html">‹ HOME</a>
 
   <section class="intro">
     <h1>ARCHIVE</h1>
