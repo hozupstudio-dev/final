@@ -32,7 +32,11 @@
     const start = parseFloat(album.dataset.start || '0');
 
     const begin = () => {
-      try { if (start && video.currentTime < start) video.currentTime = start; } catch (e) {}
+      // jump to the chorus hook, but never past the end of the clip
+      const d = video.duration;
+      if (start && isFinite(d) && start < d - 1 && video.currentTime < start) {
+        try { video.currentTime = start; } catch (e) {}
+      }
       video.muted = !soundOn;
       const p = video.play();
       if (p && p.catch) p.catch(() => {});
