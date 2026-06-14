@@ -1,30 +1,86 @@
-/* =====================================================================
- * 중앙 미디어 설정 (Media manifest)
- * 모든 로고 / 영상 / 오디오 경로를 이 한 파일에서 관리합니다.
- * - 값은 로컬 경로("assets/media/...")든 외부 URL이든 됩니다.
- * - archive: 트랙 seed → 오디오. 값이 없는 seed는 데모용 합성음으로 재생됩니다.
- *   실제 음원을 넣으려면 "13": "https://.../song.mp3" 처럼 추가하세요.
- * - behind: 유튜브 영상 ID 목록 (제목은 브라우저에서 자동 표시).
- * ===================================================================== */
+/* 중앙 미디어 설정 — 에셋 관리 페이지에서 생성됨 */
 window.MEDIA = {
   discography: [
-    { key: "hello", label: "Hello, world!", logo: "assets/media/logos/hello.svg", video: "assets/media/disco/hello.mp4", start: 0 },
-    { key: "overload", label: "Overload", logo: "assets/media/logos/overload.svg", video: "assets/media/disco/overload.mp4", start: 0 },
-    { key: "deadlock", label: "Deadlock", logo: "assets/media/logos/deadlock.svg", video: "assets/media/disco/deadlock.mp4", start: 0 },
-    { key: "livelock", label: "Livelock", logo: "assets/media/logos/livelock.svg", video: "assets/media/disco/livelock.mp4", start: 0 },
-    { key: "troubleshooting", label: "Troubleshooting", logo: "assets/media/logos/troubleshooting.svg", video: "assets/media/disco/troubleshooting.mp4", start: 0 },
-    { key: "liveandfall", label: "LIVE and FALL", logo: "assets/media/logos/liveandfall.svg", video: "assets/media/disco/liveandfall.mp4", start: 0 },
-    { key: "beautifulmind", label: "Beautiful Mind", logo: "assets/media/logos/beautifulmind.svg", video: "assets/media/disco/beautifulmind.mp4", start: 0 },
-    { key: "lxvetodeath", label: "LXVE to DEATH", logo: "assets/media/logos/lxvetodeath.svg", video: "assets/media/disco/lxvetodeath.mp4", start: 0 },
-    { key: "deadand", label: "DEAD AND", logo: "assets/media/logos/deadand.svg", video: "assets/media/disco/deadand.mp4", start: 0 }
+    { key: "hello", label: "Hello, world!", logo: "assets/media/logos/hello.svg", video: "https://youtu.be/CL6wr7jozs8?si=V8ddXfChAneIYikm", start: 0 },
+    { key: "overload", label: "Overload", logo: "assets/media/logos/overload.svg", video: "https://youtu.be/B8fqpRIQZ5M?si=WWw5H6yScwR7V9zk", start: 0 },
+    { key: "deadlock", label: "Deadlock", logo: "assets/media/logos/deadlock.svg", video: "https://youtu.be/YSZSCQkUnx4?si=nGwIED0c2zZ0qrrK", start: 0 },
+    { key: "livelock", label: "Livelock", logo: "assets/media/logos/livelock.svg", video: "https://youtu.be/EsT8nQtFHt0?si=_oASO1b8qY3OI_Dn", start: 0 },
+    { key: "troubleshooting", label: "Troubleshooting", logo: "assets/media/logos/troubleshooting.svg", video: "https://youtu.be/UV83lM3UYTw?si=Gy89PYzR_Hz_Ak3-", start: 0 },
+    { key: "liveandfall", label: "LIVE and FALL", logo: "assets/media/logos/liveandfall.svg", video: "https://youtu.be/B93haFHobpg?si=F21vY3siVOp1X1h_", start: 0 },
+    { key: "beautifulmind", label: "Beautiful Mind", logo: "assets/media/logos/beautifulmind.svg", video: "https://youtu.be/9iV-RmWapk8?si=XpaO4SI039oF9977", start: 0 },
+    { key: "lxvetodeath", label: "LXVE to DEATH", logo: "assets/media/logos/lxvetodeath.svg", video: "https://youtu.be/L4rOBdjcwLc?si=rBWvPFESsoQHeYxo", start: 0 },
+    { key: "deadand", label: "DEAD AND", logo: "assets/media/logos/deadand.svg", video: "https://youtu.be/ZeNOs_7kqaw?si=LG0wWj4o6YE21Ipj", start: 0 }
   ],
 
-  // ARCHIVE — 트랙(seed) → 오디오. 기본은 비워두어 합성음으로 재생(총 66곡).
   archive: {
-    // 예: "13": "https://example.com/helium-balloon.mp3"
+    "1": "https://youtu.be/CL6wr7jozs8?si=V8ddXfChAneIYikm",
+    "2": "https://youtu.be/G_ZJruik0lA?si=x_snUOL12NuCvZR1",
+    "3": "https://youtu.be/rdNLkQ5PlVQ?si=gcIF9vGoC_i2C_6J",
+    "4": "https://youtu.be/atWpuwRcMoc?si=K19iPqSrz-_uKOg-",
+    "5": "https://youtu.be/rRxoRq4fAnk?si=QLzFUDoSZ6i_yWy-",
+    "6": "https://youtu.be/gGnZRiaqKn8?si=XLNRQ29zNfT5-D1W",
+    "7": "https://youtu.be/OPCZ-AZ2j7s?si=pWu5CFMado8Pe3LD",
+    "8": "https://youtu.be/B8fqpRIQZ5M?si=WWw5H6yScwR7V9zk",
+    "9": "https://youtu.be/wgH_prfaPck?si=JnmPu36U7iBlzp62",
+    "10": "https://youtu.be/9wr48FBgQA4?si=krO7IkXELBmRIVD6",
+    "11": "https://youtu.be/jjROMT8s27E?si=fR5flnX5Iyv9OzWb",
+    "12": "https://youtu.be/Cde0U2rzErM?si=CR5CKwJJV3Ce-1IN",
+    "13": "https://youtu.be/NQbqj2jLwA8?si=RZxzUvlZ4svb_ALB",
+    "14": "https://youtu.be/EpYcFAhFOEU?si=7NjcgE2rAnurOVLG",
+    "15": "https://youtu.be/YSZSCQkUnx4?si=nGwIED0c2zZ0qrrK",
+    "16": "https://youtu.be/Xqetv9G3uDg?si=tt4F6h9SK0EmgXX9",
+    "17": "https://youtu.be/7fIFgBKdEuc?si=SYWoz2zON17nD86Y",
+    "18": "https://youtu.be/TFZszieg4J0?si=rpELgygGhsNrv7Qi",
+    "19": "https://youtu.be/og7O0Mft5Qw?si=u4_23xNKTKyQUWuO",
+    "20": "https://youtu.be/z6veDdj2gV0?si=MWeAEAogOs6dyk7s",
+    "21": "https://youtu.be/EsT8nQtFHt0?si=_oASO1b8qY3OI_Dn",
+    "22": "https://youtu.be/JpT9n9zv028?si=74J9uZPEdEmy2-gI",
+    "23": "https://youtu.be/PhANi29BhQM?si=QDKVb_puYMR5vVgg",
+    "24": "https://youtu.be/VHf_k0P4REs?si=amzc3_c3Q503MkMQ",
+    "25": "https://youtu.be/IxXRufwMJnk?si=tmJaB1-gZbeP7fCc",
+    "26": "https://youtu.be/R6V8KJfaNfQ?si=pTEBjgoXEuj_bgAi",
+    "27": "https://youtu.be/g5sQ3VAcNbc?si=akDXsKOKRcIaU_Ol",
+    "28": "https://youtu.be/uBE3-AkYQUI?si=LscrFG-tUmu6f-5S",
+    "29": "https://youtu.be/UV83lM3UYTw?si=Gy89PYzR_Hz_Ak3-",
+    "30": "https://youtu.be/qbLHXb9OZy8?si=TkFjPHDElumLkZsW",
+    "31": "https://youtu.be/rbycinURw4A?si=rCCnWTWYQYxZI3ac",
+    "32": "https://youtu.be/u4br0fA4ZiU?si=Ann93m3EFLBvFgbh",
+    "33": "https://youtu.be/_FY2_jn6l_E?si=qTxcHtIAOtXQZUra",
+    "34": "https://youtu.be/5i58Bz04pO0?si=S4qwJmEIsTDizpmX",
+    "35": "https://youtu.be/TO6TBdUfcE0?si=PO7CenhTN6F61kU5",
+    "36": "https://youtu.be/2Sv5l5STlYM?si=XX73RTf07_t-WERF",
+    "37": "https://youtu.be/o4TR06pTlPM?si=2p-qdGFTyv2OtGIi",
+    "38": "https://youtu.be/-akMNNavbLQ?si=MgaqwMxPhkYzY0dN",
+    "39": "https://youtu.be/B93haFHobpg?si=F21vY3siVOp1X1h_",
+    "40": "https://youtu.be/Ooi3uic6lNc?si=lw9d8Y_OLVKWnYgY",
+    "41": "https://youtu.be/F8bv1BwZqbk?si=HsmpWrgNkrXNgtmz",
+    "42": "https://youtu.be/ZCXkOGH6azI?si=XTHZP0kMCxHxncIm",
+    "43": "https://youtu.be/qHmYszcGLRE?si=3NQltK-h0qLifpBv",
+    "44": "https://youtu.be/gi8oLzMAg-M?si=rmATrDXDqBH_iXgj",
+    "45": "https://youtu.be/kvjShHlG-nc?si=essVO3twJf9poyRy",
+    "46": "https://youtu.be/9iV-RmWapk8?si=XpaO4SI039oF9977",
+    "47": "https://youtu.be/EiYwVodBKJo?si=UMVphS3sZKu2DK5O",
+    "48": "https://youtu.be/_L7wVbtpgm8?si=fb22IYsP4Bszp8i_",
+    "49": "https://youtu.be/lw3zymFMWf0?si=oVKfjHhQwVgxYvxx",
+    "50": "https://youtu.be/5Bws8dP7Ck8?si=JjEFbyzQUZJEjkwJ",
+    "51": "https://youtu.be/yxFxLeTgQ3s?si=PiR4aJ_GXuMhSZGX",
+    "52": "https://youtu.be/lEaO6BJ0hGs?si=Dor2LVVfg3r74b8G",
+    "53": "https://youtu.be/dW0X_xIrwh0?si=M7abvaItKNzGw00s",
+    "54": "https://youtu.be/L4rOBdjcwLc?si=rBWvPFESsoQHeYxo",
+    "55": "https://youtu.be/F8Xd_fFxSck?si=y3qy93wMhXcrVTrR",
+    "56": "https://youtu.be/Um1a2iPBPaw?si=QFIOzFbUMb6hwGN3",
+    "57": "https://youtu.be/xyux2DyZjIw?si=vYG5UqEtHMB0Vbss",
+    "58": "https://youtu.be/677MsbCAj8U?si=1UaA2gNKisGOI07W",
+    "59": "https://youtu.be/y9siAY03BCQ?si=U6iT9b5G6C4BVm8t",
+    "60": "https://youtu.be/rM2y-nLCWOQ?si=oUN_qKw6-BGUVM7b",
+    "61": "https://youtu.be/ZeNOs_7kqaw?si=LG0wWj4o6YE21Ipj",
+    "62": "https://youtu.be/I1ceKacVa5Y?si=JX86tglD3WAt9VQk",
+    "63": "https://youtu.be/k1VKQl-hLdo?si=b040iv0A0xZigqJT",
+    "64": "https://youtu.be/RTzUBMRr2e0?si=xBwePAZIj-yAFx0A",
+    "65": "https://youtu.be/bCANCsA2tiA?si=kUr5yQkD-3zf90NA",
+    "66": "https://youtu.be/kG68WXnzSbQ?si=AYxYBilHVy8vH40i"
   },
 
-  // BEHIND — 유튜브 비하인드 영상
   behind: [
     { id: "4N9Ir4X9RTc", label: "Behind Clip 1" },
     { id: "hQEn5Ko17NU", label: "Behind Clip 2" },
