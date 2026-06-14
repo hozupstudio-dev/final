@@ -43,6 +43,14 @@
       const v = a.querySelector('video'); if (v) v.remove();
       const host = document.createElement('div'); host.className = 'yt-bg';
       a.insertBefore(host, a.querySelector('.scrim'));
+      // show the video's thumbnail as the background so it's visibly applied
+      // even when the video disallows embedding (common for official MVs)
+      const fb = a.querySelector('.bg-fallback');
+      if (fb) {
+        fb.style.backgroundImage = "linear-gradient(rgba(0,0,0,0.15),rgba(0,0,0,0.35)), url('https://i.ytimg.com/vi/" + yt + "/hqdefault.jpg')";
+        fb.style.backgroundSize = 'cover';
+        fb.style.backgroundPosition = 'center';
+      }
     } else if (c.video) {
       const v = a.querySelector('video'); if (v) v.dataset.src = c.video;
     }
