@@ -8,10 +8,19 @@
   const exitBtn = document.getElementById('exitBtn');
   let entered = false;
 
+  // resolve a clip's source through the central manifest (assets/js/media.js)
+  function srcFor(clip) {
+    const key = clip.dataset.key;
+    return (key && window.MEDIA && window.MEDIA.behind && window.MEDIA.behind[key])
+      || clip.dataset.video;
+  }
+
   // lazy-load + softly autoplay the inline preview videos inside the room
   function startPreviews() {
-    interior.querySelectorAll('video[data-src]').forEach((v) => {
-      if (!v.src) v.src = v.dataset.src;
+    interior.querySelectorAll('.feature-clip, .mini-clip').forEach((clip) => {
+      const v = clip.querySelector('video');
+      if (!v) return;
+      if (!v.src) v.src = srcFor(clip);
       v.muted = true;
       const p = v.play();
       if (p && p.catch) p.catch(() => {}); // poster stays if it can't play
@@ -74,7 +83,7 @@
   }
 
   document.querySelectorAll('.feature-clip, .mini-clip').forEach((clip) => {
-    clip.addEventListener('click', () => openClip(clip.dataset.video, clip.dataset.title));
+    clip.addEventListener('click', () => openClip(srcFor(clip), clip.dataset.title));
   });
   lbClose.addEventListener('click', closeClip);
   lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeClip(); });

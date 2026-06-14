@@ -5,6 +5,18 @@
 (function () {
   const deck = document.getElementById('deck');
   const albums = Array.from(deck.querySelectorAll('.album'));
+
+  // apply central media manifest (assets/js/media.js) if present
+  const cfg = (window.MEDIA && window.MEDIA.discography) || [];
+  albums.forEach((a, i) => {
+    const c = cfg[i];
+    if (!c) return;
+    const v = a.querySelector('video');
+    const lg = a.querySelector('.logo');
+    if (c.video) v.dataset.src = c.video;
+    if (c.logo) lg.src = c.logo;
+    if (c.start != null) a.dataset.start = String(c.start);
+  });
   const dotsWrap = document.getElementById('dots');
   const cue = document.getElementById('scrollCue');
   let soundOn = false;

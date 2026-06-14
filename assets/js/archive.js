@@ -71,7 +71,8 @@
     np.classList.add('show');
 
     const seed = parseInt(li.dataset.seed || '0', 10);
-    const src = 'assets/media/audio/' + seed + '.mp3';
+    const src = (window.MEDIA && window.MEDIA.archive && window.MEDIA.archive[seed])
+      || ('assets/media/audio/' + seed + '.mp3');
 
     // try the real file first; on error, fall back to synth
     htmlAudio = new Audio(src);
