@@ -116,7 +116,16 @@
       const fileLabel = document.createElement('label'); fileLabel.className = 'filebtn';
       fileLabel.innerHTML = '📁 파일<input type="file" accept="' + o.fileAccept + '">';
       fileLabel.querySelector('input').addEventListener('change', (e) => {
-        const f = e.target.files[0]; if (!f) return; const u = URL.createObjectURL(f);
+        const f = e.target.files[0]; if (!f) return;
+        // images (logos) → embed as a data URI so they are saved INTO media.js
+        // (no separate file upload needed). videos/audio stay preview-only.
+        if (o.thumbKind === 'img') {
+          const rd = new FileReader();
+          rd.onload = () => { input.value = rd.result; o.onText(rd.result); pv.innerHTML = previewHTML('img', rd.result); };
+          rd.readAsDataURL(f);
+          return;
+        }
+        const u = URL.createObjectURL(f);
         pv.innerHTML = o.thumbKind === 'audio' ? '<audio controls src="' + u + '" style="width:100%"></audio>' : previewHTML(o.thumbKind, u);
       });
       ctrls.appendChild(input); ctrls.appendChild(fileLabel);
