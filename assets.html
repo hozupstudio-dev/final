@@ -95,6 +95,11 @@
         return id ? '<img src="https://i.ytimg.com/vi/' + id + '/mqdefault.jpg" onerror="this.style.opacity=.2">'
                   : '<div class="audio">🎵<br>오디오</div>';
       }
+      if (kind === 'yt-or-video') {
+        const id = ytId(url);
+        return id ? '<img src="https://i.ytimg.com/vi/' + id + '/mqdefault.jpg" onerror="this.style.opacity=.2">'
+                  : '<video src="' + url + '" muted loop playsinline autoplay onerror="this.style.opacity=.2"></video>';
+      }
       return '<div class="audio">🎵<br>오디오</div>';
     }
 
@@ -128,7 +133,7 @@
       g.innerHTML = '<h2>DISCOGRAPHY</h2><div class="gsub">앨범별 중앙 로고 + 전체화면 배경 영상</div>';
       state.discography.forEach((c, i) => {
         g.appendChild(mediaRow({ thumbKind:'img', label:c.label + ' — 로고', value:c.logo, fileAccept:'image/*,.svg', onText:(v)=>state.discography[i].logo=v }));
-        g.appendChild(mediaRow({ thumbKind:'video', label:c.label + ' — 배경 영상', value:c.video, fileAccept:'video/*', onText:(v)=>state.discography[i].video=v }));
+        g.appendChild(mediaRow({ thumbKind:'yt-or-video', label:c.label + ' — 배경 영상', sub:'mp4 경로 또는 유튜브 링크', value:c.video, fileAccept:'video/*', onText:(v)=>state.discography[i].video=v }));
       });
       groups.appendChild(g);
 
