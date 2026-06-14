@@ -79,7 +79,6 @@
 </head>
 <body>
   <div class="wall"></div>
-  <a class="home-link" href="index.html">‹ HOME</a>
 
   <section class="intro"><h1>ARCHIVE</h1></section>
 
@@ -233,6 +232,9 @@
     <div class="np-text"><b id="npTitle">—</b><small id="npAlbum">NOW PLAYING</small></div>
     <span class="np-stop" id="npStop">✕</span>
   </div>
+
+  <!-- hidden host: YouTube audio plays here (video off-screen, sound only) -->
+  <div id="ytHost" style="position:fixed; left:-9999px; top:-9999px; width:240px; height:135px; pointer-events:none;"></div>
 
   <script src="assets/js/media.js"></script>
   <script src="assets/js/archive.js"></script>

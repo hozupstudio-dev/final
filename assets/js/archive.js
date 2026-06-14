@@ -14,10 +14,46 @@
 
   function getCtx() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); return audioCtx; }
 
+  // ---- YouTube audio (video kept off-screen, sound only) ----
+  let ytPlayer = null, ytReady = false, ytPending = null;
+  function parseYouTube(s) {
+    if (!s) return null;
+    s = String(s).trim();
+    let m = s.match(/(?:youtu\.be\/|v=|\/embed\/|\/shorts\/)([A-Za-z0-9_-]{11})/);
+    if (m) return m[1];
+    if (/^[A-Za-z0-9_-]{11}$/.test(s)) return s;       // bare 11-char id
+    return null;
+  }
+  function loadYTApi() {
+    if (window.YT && window.YT.Player) { ytReady = true; return; }
+    if (document.getElementById('yt-api')) return;
+    const s = document.createElement('script');
+    s.id = 'yt-api'; s.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(s);
+    window.onYouTubeIframeAPIReady = function () {
+      ytReady = true;
+      if (ytPending) { const v = ytPending; ytPending = null; startYT(v); }
+    };
+  }
+  function startYT(videoId) {
+    if (!ytReady) { ytPending = videoId; loadYTApi(); return; }
+    if (ytPlayer && ytPlayer.loadVideoById) { ytPlayer.loadVideoById(videoId); ytPlayer.playVideo(); return; }
+    ytPlayer = new YT.Player('ytHost', {
+      videoId: videoId,
+      playerVars: { autoplay: 1, playsinline: 1, controls: 0, rel: 0 },
+      events: {
+        onReady: (e) => e.target.playVideo(),
+        onStateChange: (e) => { if (e.data === YT.PlayerState.ENDED) stopAll(); }
+      }
+    });
+  }
+  function stopYT() { try { if (ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo(); } catch (e) {} }
+
   function stopAll() {
     synthNodes.forEach((n) => { try { n.stop(); } catch (e) {} });
     synthNodes = [];
     if (htmlAudio) { htmlAudio.pause(); htmlAudio = null; }
+    stopYT();
     if (current) current.classList.remove('playing');
     current = null;
     np.classList.remove('show');
@@ -57,6 +93,9 @@
     const seed = parseInt(btn.dataset.seed || '0', 10);
     const src = window.MEDIA && window.MEDIA.archive && window.MEDIA.archive[seed];
     if (!src) { playSynth(seed); return; }              // default demo: synth
+
+    const ytId = parseYouTube(src);                     // YouTube link → audio only (no redirect)
+    if (ytId) { startYT(ytId); return; }
 
     htmlAudio = new Audio(src);
     htmlAudio.volume = 0.9;
