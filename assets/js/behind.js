@@ -80,12 +80,20 @@
   const lbFrame = document.getElementById('lbFrame');
   const lbTitle = document.getElementById('lbTitle');
   const lbClose = document.getElementById('lbClose');
+  const lbOpen = document.getElementById('lbOpen');
 
   function openClip(id, title) {
     lbTitle.textContent = title || 'Behind Clip';
-    lbFrame.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + id +
-      '?autoplay=1&rel=0" title="' + (title || '') +
-      '" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
+    lbOpen.href = 'https://www.youtube.com/watch?v=' + id;   // fallback if embedding is blocked
+    // standard youtube.com/embed (avoids the nocookie config error 153),
+    // autoplay within this click gesture + playsinline; pass origin when on http(s)
+    const origin = location.protocol.indexOf('http') === 0
+      ? '&origin=' + encodeURIComponent(location.origin) : '';
+    const src = 'https://www.youtube.com/embed/' + id +
+      '?autoplay=1&playsinline=1&rel=0&modestbranding=1&enablejsapi=1' + origin;
+    lbFrame.innerHTML = '<iframe src="' + src + '" title="' + (title || '') +
+      '" referrerpolicy="strict-origin-when-cross-origin" ' +
+      'allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>';
     lightbox.classList.add('show');
   }
   function closeClip() { lbFrame.innerHTML = ''; lightbox.classList.remove('show'); }
